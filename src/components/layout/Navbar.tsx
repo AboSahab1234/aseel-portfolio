@@ -45,12 +45,12 @@ export default function Navbar() {
               </div>
               <div>
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                 اصيل عبدالجليل الصبري
+                 اصيل الصبري
                 </div>
                 <div className={`text-sm transition-all ${
                   scrolled ? 'text-gray-600' : 'text-gray-500'
                 }`}>
-                  مطور ويب متخصص
+                  مطور ويب 
                 </div>
               </div>
             </Link>
