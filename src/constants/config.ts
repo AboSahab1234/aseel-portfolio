@@ -67,7 +67,7 @@ export const siteConfig = {
   // ============ التعليم ============
   education: {
     degree: "بكالوريوس علوم حاسوب",
-    period: "2019 - 2023",
+    period: "2025 - 2024",
     university: "جامعة إقليم سبأ",
     location: "مأرب، اليمن",
     gpa: "", // يمكن إضافته
@@ -83,7 +83,7 @@ export const siteConfig = {
   experiences: [
     {
       id: 1,
-      period: "يناير 2019 - 2019",
+      period: "يناير 2019 - 2026",
       title: "مكتب إداري - قسم الكمبيوتر",
       company: "",
       location: "مأرب، اليمن",
