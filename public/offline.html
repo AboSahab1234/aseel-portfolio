@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دون اتصال بالإنترنت | اصيل عبدالجليل</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: white;
+    }
+    
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .btn {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📶</div>
+    <h1>أنت غير متصل بالإنترنت</h1>
+    <p>عذرًا، يبدو أن اتصالك بالإنترنت قد انقطع. بعض الميزات قد لا تعمل بشكل صحيح.</p>
+    <p>يمكنك محاولة:</p>
+    <div style="margin: 20px 0;">
+      <p>✓ التحقق من اتصالك بالشبكة</p>
+      <p>✓ إعادة تحميل الصفحة</p>
+      <p>✓ استخدام المحتوى المخزن مؤقتًا</p>
+    </div>
+    <button class="btn" onclick="window.location.reload()">إعادة تحميل</button>
+  </div>
+</body>
+</html>

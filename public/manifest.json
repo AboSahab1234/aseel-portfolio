@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "اصيل عبدالجليل | مطور ويب",
+  "short_name": "اصيل عبدالجليل",
+  "description": "موقع شخصي لمطور ويب متخصص في Next.js، React، TypeScript",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#2563EB",
+  "categories": ["technology", "web development", "portfolio"],
+  "dir": "rtl",
+  "lang": "ar",
+  "scope": "/",
+  
+  "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "360x640",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "الصفحة الرئيسية على الجوال"
+    },
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "الصفحة الرئيسية على سطح المكتب"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "المشاريع",
+      "short_name": "المشاريع",
+      "description": "عرض مشاريعي السابقة",
+      "url": "/#projects",
+      "icons": [{ "src": "/shortcuts/projects.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "الاتصال بي",
+      "short_name": "اتصال",
+      "description": "تواصل معي مباشرة",
+      "url": "/#contact",
+      "icons": [{ "src": "/shortcuts/contact.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "سيرتي الذاتية",
+      "short_name": "السيرة",
+      "description": "تحميل السيرة الذاتية",
+      "url": "/resume.pdf",
+      "icons": [{ "src": "/shortcuts/resume.png", "sizes": "96x96" }]
+    }
+  ],
+  
+  "related_applications": [],
+  
+  "prefer_related_applications": false,
+  
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/contact?email=%s"
+    },
+    {
+      "protocol": "web+mylink",
+      "url": "/link?url=%s"
+    }
+  ],
+  
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  
+  "edge_side_panel": {
+    "preferred_width": 440
+  }
+}
