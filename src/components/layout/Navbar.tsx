@@ -41,7 +41,7 @@ export default function Navbar() {
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center transition-transform group-hover:scale-110 ${
                 scrolled ? 'shadow-lg' : 'shadow-xl'
               }`}>
-                <span className="text-white font-bold text-xl">أ</span>
+                <span className="text-white font-bold text-xl">💻</span>
               </div>
               <div>
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
