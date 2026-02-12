@@ -15,15 +15,15 @@ export default function Home() {
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://aseel-website-sandy.vercel.app/#person",
+        "@id": "https://aseel-portfolio-eight.vercel.app/#person",
         "name": ["اصيل الصبري", "Aseel Al-Sabri", "اصيل عبدالجليل"],
         "alternateName": "Aseel",
-        "url": "https://aseel-website-sandy.vercel.app",
-        "image": "https://aseel-website-sandy.vercel.app/profile.jpg",
+        "url": "https://aseel-portfolio-eight.vercel.app",
+        "image": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
         "jobTitle": "مطور ويب متخصص في Next.js",
         "worksFor": {
           "@type": "Organization",
-          "@id": "https://aseel-website-sandy.vercel.app/#person",
+          "@id": "https://aseel-portfolio-eight.vercel.app/#person",
           "name": "مستقل"
         },
         "sameAs": [
@@ -41,16 +41,16 @@ export default function Home() {
       },
       {
         "@type": "WebSite",
-        "@id": "https://aseel-website-sandy.vercel.app/#website",
-        "url": "https://aseel-website-sandy.vercel.app",
+        "@id": "https://aseel-portfolio-eight.vercel.app/#website",
+        "url": "https://aseel-portfolio-eight.vercel.app",
         "name": "اصيل الصبري | مطور ويب",
-        "publisher": { "@id": "https://aseel-website-sandy.vercel.app/#person" }
+        "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" }
       },
       {
         "@type": "ImageObject",
-        "@id": "https://aseel-website-sandy.vercel.app/#profile-image",
-        "url": "https://aseel-website-sandy.vercel.app/profile.jpg",
-        "contentUrl": "https://aseel-website-sandy.vercel.app/profile.jpg",
+        "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
+        "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+        "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
         "license": "https://creativecommons.org/licenses/by/4.0/",
         "caption": "اصيل الصبري - مطور ويب"
       }
