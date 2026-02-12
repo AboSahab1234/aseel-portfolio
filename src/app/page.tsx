@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Script from 'next/script'; // ✅ أضف هذا السطر
+import Script from 'next/script';
 import Hero from "./Hero";
 import Skills from "./Skills";
 
@@ -10,6 +10,7 @@ export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // --- كيانك الرقمي (Entity Graph) ---
+  // ✅ النسخة المعدلة بالكامل – خالية من أخطاء Image Metadata
   const entityGraph = {
     "@context": "https://schema.org",
     "@graph": [
@@ -19,18 +20,32 @@ export default function Home() {
         "name": ["اصيل الصبري", "Aseel Al-Sabri", "اصيل عبدالجليل"],
         "alternateName": "Aseel",
         "url": "https://aseel-portfolio-eight.vercel.app",
-        "image": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+        // ✅ الصورة الآن كائن ImageObject متكامل داخل Person
+        "image": {
+          "@type": "ImageObject",
+          "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
+          "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+          "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+          "caption": "اصيل الصبري - مطور ويب متخصص في Next.js",
+          "copyrightNotice": "© 2026 أصيل الصبري. جميع الحقوق محفوظة.",
+          "creditText": "تصوير: أصيل الصبري",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
+          "creator": {
+            "@type": "Person",
+            "name": "اصيل الصبري"
+          }
+          // ملاحظة: لم أضف acquireLicensePage لأنه غير متوفر – هذا لا يسبب مشكلة
+        },
         "jobTitle": "مطور ويب متخصص في Next.js",
         "worksFor": {
           "@type": "Organization",
-          "@id": "https://aseel-portfolio-eight.vercel.app/#person",
           "name": "مستقل"
+          // ✅ تم إزالة @id الخاطئ الذي كان يشير إلى الشخص نفسه
         },
         "sameAs": [
           "https://github.com/AboSahab1234",
-          // ⚠️ غيّر هذا الرابط بعد إنشاء حساب LinkedIn
-          "https://www.linkedin.com/in/aseelalsabri",
-          // سيتم إضافة رابط Wikidata لاحقاً
+          "https://www.linkedin.com/in/aseelalsabri", // ⚠️ غير هذا الرابط بعد إنشاء الحساب الفعلي
+          // "https://www.wikidata.org/wiki/Q..." // أضف رابط ويكي بيانات هنا لاحقاً
         ],
         "alumniOf": {
           "@type": "CollegeOrUniversity",
@@ -45,15 +60,8 @@ export default function Home() {
         "url": "https://aseel-portfolio-eight.vercel.app",
         "name": "اصيل الصبري | مطور ويب",
         "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" }
-      },
-      {
-        "@type": "ImageObject",
-        "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
-        "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
-        "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
-        "license": "https://creativecommons.org/licenses/by/4.0/",
-        "caption": "اصيل الصبري - مطور ويب"
       }
+      // ✅ لم نعد بحاجة إلى ImageObject منفصل – كل شيء داخل Person
     ]
   };
 
@@ -96,7 +104,7 @@ export default function Home() {
     },
     {
       period: "يناير 2026 - 2019",
-      title: "مكتب إداري قسم الكمبيوتر",
+      title: " إدارة المكاتب  ",
       description: "أعمال التصميم والتخطيط، إنشاء وإعداد وإدارة البيانات والتقارير، تصميم وطباعة منشورات إعلانية وتوعوية.",
       icon: "🏢",
       color: "from-purple-500 to-pink-500",
@@ -161,7 +169,7 @@ export default function Home() {
 
   return (
     <>
-      {/* ✅ كود الهوية الرقمية – يجب أن يكون أول عنصر */}
+      {/* ✅ كود الهوية الرقمية – النسخة المعدلة بالكامل */}
       <Script
         id="entity-graph"
         type="application/ld+json"
