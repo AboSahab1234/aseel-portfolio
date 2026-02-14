@@ -7,7 +7,6 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
 
-  // ربط الروابط الاجتماعية ببيانات الملف المركزي (تم إصلاح المسارات)
   const socialLinks = [
     { icon: '🐙', label: 'GitHub', href: siteConfig?.contact?.social?.github || '#' },
     { icon: '💼', label: 'LinkedIn', href: siteConfig?.contact?.social?.linkedin || '#' },
@@ -26,7 +25,7 @@ export default function Footer() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      alert(`شكراً للاشتراك يا مبدع! سيصلك كل جديد من أصيل الصبري على: ${email}`);
+      alert(`شكراً للاشتراك! سيصلك كل جديد من أصيل الصبري على: ${email}`);
       setEmail('');
     }
   };
@@ -35,7 +34,6 @@ export default function Footer() {
     <footer className="bg-gradient-to-br from-gray-950 to-gray-900 text-white pt-20 pb-10 border-t border-gray-800" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* الجزء العلوي - توزيع المعلومات */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           
           {/* هوية أصيل الصبري الرقمية */}
@@ -45,8 +43,9 @@ export default function Footer() {
                 <span className="text-2xl font-bold text-white">أ</span>
               </div>
               <div>
+                {/* ✅ تم التعديل هنا: استخدام site.name بدلاً من site.fullName */}
                 <h3 className="text-2xl font-bold tracking-tight">
-                  {siteConfig?.site?.fullName || 'أصيل الصبري'}
+                  {siteConfig?.site?.name || 'أصيل الصبري'}
                 </h3>
                 <p className="text-blue-400 text-sm font-medium">
                   {siteConfig?.site?.jobTitle || 'مطور ويب وحلول رقمية'}
@@ -125,7 +124,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* النشرة البريدية المطورة */}
+          {/* النشرة البريدية */}
           <div>
             <h4 className="text-lg font-bold mb-8 flex items-center gap-2">
               <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
@@ -157,10 +156,10 @@ export default function Footer() {
         <div className="pt-10 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-center md:text-right">
             <p className="text-gray-400 text-sm">
-              جميع الحقوق محفوظة © {currentYear} <span className="text-white font-bold">{siteConfig?.site?.fullName || 'أصيل الصبري'}</span>
+              جميع الحقوق محفوظة © {currentYear} <span className="text-white font-bold">{siteConfig?.site?.name || 'أصيل الصبري'}</span>
             </p>
             <p className="text-xs text-gray-600 mt-2">
-               تم التطوير باستخدام Next.js 14 - النسخة البرمجية المستقرة
+               تم التطوير باستخدام Next.js 14
             </p>
           </div>
           

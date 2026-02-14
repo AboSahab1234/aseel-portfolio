@@ -46,8 +46,9 @@ export default function Navbar() {
                 <span className="text-white font-bold text-xl">💻</span>
               </div>
               <div>
+                {/* ✅ تم التعديل هنا: استخدام site.name بدلاً من site.fullName */}
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                  {siteConfig?.site?.fullName || 'أصيل الصبري'}
+                  {siteConfig?.site?.name || 'أصيل الصبري'}
                 </div>
                 <div className={`text-xs font-medium transition-all ${
                   scrolled ? 'text-gray-600' : 'text-gray-400'
