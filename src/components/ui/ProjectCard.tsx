@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Project {
   id: number;
@@ -11,7 +12,7 @@ interface Project {
   status: string;
   link: string;
   github: string;
-  image: string;
+  image?: string; // اختياري
   features: string[];
 }
 
@@ -21,6 +22,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <div 
@@ -28,12 +30,24 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header with gradient */}
-      <div className="h-40 bg-gradient-to-r from-blue-500 to-purple-600 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      {/* Header with image or gradient */}
+      <div className="h-40 relative overflow-hidden">
+        {project.image && !imageError ? (
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600" />
+        )}
+        <div className="absolute inset-0 bg-black/10" />
         <div className="absolute top-4 right-4">
           <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold">
-            {project.status}
+            {project.status || "قيد التطوير"}
           </span>
         </div>
       </div>
@@ -42,7 +56,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <div className="p-6">
         {/* Tech Stack */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies.slice(0, 3).map((tech, idx) => (
+          {(project.technologies || []).slice(0, 3).map((tech, idx) => (
             <span 
               key={idx}
               className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100"
@@ -50,9 +64,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               {tech}
             </span>
           ))}
-          {project.technologies.length > 3 && (
+          {(project.technologies?.length || 0) > 3 && (
             <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-              +{project.technologies.length - 3}
+              +{(project.technologies?.length || 0) - 3}
             </span>
           )}
         </div>
@@ -69,9 +83,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Features */}
         <div className="space-y-2 mb-6">
-          {project.features.slice(0, 3).map((feature, idx) => (
+          {(project.features || []).slice(0, 3).map((feature, idx) => (
             <div key={idx} className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center shrink-0">
                 <span className="text-white text-xs">✓</span>
               </div>
               <span className="text-gray-700 text-sm">{feature}</span>

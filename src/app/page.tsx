@@ -16,16 +16,16 @@ export default function Home() {
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://aseel-portfolio-eight.vercel.app/#person",
+        "@id": "https://aseel-website-sandy.vercel.app/#person", // ✅ تم التحديث
         "name": ["اصيل الصبري", "Aseel Al-Sabri", "اصيل عبدالجليل"],
         "alternateName": "Aseel",
-        "url": "https://aseel-portfolio-eight.vercel.app",
+        "url": "https://aseel-website-sandy.vercel.app", // ✅ تم التحديث
         // ✅ الصورة الآن كائن ImageObject متكامل داخل Person
         "image": {
           "@type": "ImageObject",
-          "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
-          "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
-          "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+          "@id": "https://aseel-website-sandy.vercel.app/#profile-image", // ✅ تم التحديث
+          "url": "https://aseel-website-sandy.vercel.app/profile.jpg", // ✅ تم التحديث
+          "contentUrl": "https://aseel-website-sandy.vercel.app/profile.jpg", // ✅ تم التحديث
           "caption": "اصيل الصبري - مطور ويب متخصص في Next.js",
           "copyrightNotice": "© 2026 أصيل الصبري. جميع الحقوق محفوظة.",
           "creditText": "تصوير: أصيل الصبري",
@@ -56,10 +56,10 @@ export default function Home() {
       },
       {
         "@type": "WebSite",
-        "@id": "https://aseel-portfolio-eight.vercel.app/#website",
-        "url": "https://aseel-portfolio-eight.vercel.app",
+        "@id": "https://aseel-website-sandy.vercel.app/#website", // ✅ تم التحديث
+        "url": "https://aseel-website-sandy.vercel.app", // ✅ تم التحديث
         "name": "اصيل الصبري | مطور ويب",
-        "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" }
+        "publisher": { "@id": "https://aseel-website-sandy.vercel.app/#person" } // ✅ تم التحديث
       }
       // ✅ لم نعد بحاجة إلى ImageObject منفصل – كل شيء داخل Person
     ]

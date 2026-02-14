@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from "react";
+import { siteConfig } from "@/constants/config";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
 
+  // ربط الروابط الاجتماعية ببيانات الملف المركزي (تم إصلاح المسارات)
   const socialLinks = [
-    { icon: '🐙', label: 'GitHub', href: 'https://github.com/AboSahabHezam' },
-    { icon: '💼', label: 'LinkedIn', href: '#' },
-    { icon: '🐦', label: 'Twitter', href: '#' },
-    { icon: '📷', label: 'Instagram', href: '#' },
+    { icon: '🐙', label: 'GitHub', href: siteConfig?.contact?.social?.github || '#' },
+    { icon: '💼', label: 'LinkedIn', href: siteConfig?.contact?.social?.linkedin || '#' },
+    { icon: '💬', label: 'WhatsApp', href: siteConfig?.contact?.whatsapp?.link || 'https://wa.me/967781756747' },
+    { icon: '🐦', label: 'Twitter', href: siteConfig?.contact?.social?.twitter || '#' },
   ];
 
   const quickLinks = [
@@ -24,38 +26,43 @@ export default function Footer() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      alert(`شكراً للاشتراك! سيصلك كل جديد على: ${email}`);
+      alert(`شكراً للاشتراك يا مبدع! سيصلك كل جديد من أصيل الصبري على: ${email}`);
       setEmail('');
     }
   };
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white pt-20 pb-10" dir="rtl">
+    <footer className="bg-gradient-to-br from-gray-950 to-gray-900 text-white pt-20 pb-10 border-t border-gray-800" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* الجزء العلوي */}
+        
+        {/* الجزء العلوي - توزيع المعلومات */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* معلومات الموقع */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                <span className="text-xl font-bold">أ</span>
+          
+          {/* هوية أصيل الصبري الرقمية */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-xl transform -rotate-3">
+                <span className="text-2xl font-bold text-white">أ</span>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">اصيل عبدالجليل</h3>
-                <p className="text-gray-400 text-sm">نافذتي إلى العالم</p>
+                <h3 className="text-2xl font-bold tracking-tight">
+                  {siteConfig?.site?.fullName || 'أصيل الصبري'}
+                </h3>
+                <p className="text-blue-400 text-sm font-medium">
+                  {siteConfig?.site?.jobTitle || 'مطور ويب وحلول رقمية'}
+                </p>
               </div>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              موقعي الشخصي لعرض مهاراتي وخبراتي في تطوير الويب، ومشاركة معرفتي مع العالم.
+            <p className="text-gray-400 leading-relaxed text-sm lg:text-base">
+              {siteConfig?.bio?.summary || 'مطور ويب متكامل'} نهدف إلى تقديم أفضل الحلول البرمجية لخدمة المجتمع اليمني وتطوير الأنظمة التقنية.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
-                  className="w-12 h-12 rounded-xl bg-gray-800 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 flex items-center justify-center text-xl transition-all hover:scale-110"
+                  className="w-11 h-11 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500 hover:bg-blue-600/10 flex items-center justify-center text-xl transition-all duration-300 hover:-translate-y-1"
                   title={social.label}
-                  aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -65,21 +72,20 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* روابط سريعة */}
-          <div>
-            <h4 className="text-xl font-bold mb-6 relative pb-3">
+          {/* التنقل السريع */}
+          <div className="lg:mr-10">
+            <h4 className="text-lg font-bold mb-8 flex items-center gap-2">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
               روابط سريعة
-              <span className="absolute bottom-0 right-0 w-12 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></span>
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <a
                     href={link.href}
-                    className="text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center gap-2 group"
-                    aria-label={link.label}
+                    className="text-gray-400 hover:text-white transition-all duration-300 flex items-center gap-2 group"
                   >
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">←</span>
+                    <span className="h-px w-0 bg-blue-500 transition-all duration-300 group-hover:w-4"></span>
                     {link.label}
                   </a>
                 </li>
@@ -87,122 +93,90 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* معلومات التواصل */}
+          {/* قنوات التواصل المباشرة */}
           <div>
-            <h4 className="text-xl font-bold mb-6 relative pb-3">
-              تواصل معي
-              <span className="absolute bottom-0 right-0 w-12 h-1 bg-gradient-to-r from-green-500 to-teal-500 rounded-full"></span>
+            <h4 className="text-lg font-bold mb-8 flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              قنوات التواصل
             </h4>
-            <div className="space-y-4">
-              <a href="tel:+967781756747" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500 transition-colors">
+            <div className="space-y-5">
+              <a href={siteConfig?.contact?.primary?.link || 'tel:+967781756747'} className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all">
                   📞
                 </div>
-                <div>
-                  <div className="font-medium">+967 781756747</div>
-                  <div className="text-sm text-gray-400">اتصل بي</div>
-                </div>
+                <span className="text-gray-400 group-hover:text-white transition-colors">
+                  {siteConfig?.contact?.primary?.value || '+967 781756747'}
+                </span>
               </a>
-              <div className="flex items-center gap-3 text-gray-300">
-                <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
                   📍
                 </div>
-                <div>
-                  <div className="font-medium">مأرب / حي الشركة</div>
-                  <div className="text-sm text-gray-400">الموقع</div>
-                </div>
+                <span className="text-gray-400">
+                  {siteConfig?.contact?.address?.fullAddress || 'مأرب، اليمن'}
+                </span>
               </div>
-              <a href="mailto:" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
-                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500 transition-colors">
+              <a href={siteConfig?.contact?.whatsapp?.link || 'https://wa.me/967781756747'} className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
                   ✉️
                 </div>
-                <div>
-                  <div className="font-medium">أرسل بريداً</div>
-                  <div className="text-sm text-gray-400">اضغط هنا</div>
-                </div>
+                <span className="text-gray-400 group-hover:text-white transition-colors">تواصل مباشر</span>
               </a>
             </div>
           </div>
 
-          {/* النشرة البريدية */}
+          {/* النشرة البريدية المطورة */}
           <div>
-            <h4 className="text-xl font-bold mb-6 relative pb-3">
-              النشرة البريدية
-              <span className="absolute bottom-0 right-0 w-12 h-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full"></span>
+            <h4 className="text-lg font-bold mb-8 flex items-center gap-2">
+              <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+              ابقَ على اطلاع
             </h4>
-            <p className="text-gray-300 mb-6">
-              اشترك لتصلك آخر التحديثات والمقالات التقنية
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+              اشترك في النشرة البريدية ليصلك جديد مشاريع وأفكار أصيل الصبري التقنية.
             </p>
-            <form onSubmit={handleSubscribe} className="space-y-3">
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="بريدك الإلكتروني"
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500"
-                  required
-                  aria-label="البريد الإلكتروني للاشتراك"
-                />
-                <button
-                  type="submit"
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity"
-                  aria-label="اشتراك"
-                >
-                  اشتراك
-                </button>
-              </div>
-              <p className="text-gray-500 text-sm">
-                لن نشارك بريدك مع أي طرف ثالث
-              </p>
+            <form onSubmit={handleSubscribe} className="relative group">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="بريدك الإلكتروني"
+                className="w-full px-5 py-4 bg-gray-900/50 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all text-white"
+                required
+              />
+              <button
+                type="submit"
+                className="mt-3 w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-bold hover:shadow-lg hover:shadow-blue-500/20 transition-all active:scale-95"
+              >
+                اشترك الآن
+              </button>
             </form>
           </div>
         </div>
 
-        {/* خط فاصل */}
-        <div className="border-t border-gray-700 my-8"></div>
-
-        {/* حقوق النشر */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        {/* سطر الحقوق السفلي */}
+        <div className="pt-10 border-t border-gray-800/50 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-center md:text-right">
-            <p className="text-gray-400">
-              © {currentYear} <span className="text-white font-semibold">اصيل عبدالجليل</span>. جميع الحقوق محفوظة.
+            <p className="text-gray-400 text-sm">
+              جميع الحقوق محفوظة © {currentYear} <span className="text-white font-bold">{siteConfig?.site?.fullName || 'أصيل الصبري'}</span>
             </p>
-            <p className="text-gray-500 text-sm mt-2">
-              مصمم ومطور بكل ❤️ باستخدام Next.js, React, و Tailwind CSS
+            <p className="text-xs text-gray-600 mt-2">
+               تم التطوير باستخدام Next.js 14 - النسخة البرمجية المستقرة
             </p>
           </div>
           
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              سياسة الخصوصية
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              شروط الاستخدام
-            </a>
-            <div className="flex items-center gap-2 text-gray-500">
-              <span>🔄 تم التحديث اليوم</span>
-            </div>
-          </div>
-        </div>
-
-        {/* إحصائيات صغيرة */}
-        <div className="mt-8 pt-6 border-t border-gray-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-blue-400">99.9%</div>
-            <div className="text-gray-400 text-sm">سرعة التحميل</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-green-400">100%</div>
-            <div className="text-gray-400 text-sm">تجاوبية</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-purple-400">SEO</div>
-            <div className="text-gray-400 text-sm">مُحسّن</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-yellow-400">HTTPS</div>
-            <div className="text-gray-400 text-sm">آمن</div>
+          <div className="flex gap-8">
+             <div className="text-center">
+                <div className="text-xl font-bold text-blue-500">99%</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest">Performance</div>
+             </div>
+             <div className="text-center">
+                <div className="text-xl font-bold text-purple-500">SEO</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest">Optimized</div>
+             </div>
+             <div className="text-center">
+                <div className="text-xl font-bold text-green-500">SSL</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest">Secured</div>
+             </div>
           </div>
         </div>
       </div>

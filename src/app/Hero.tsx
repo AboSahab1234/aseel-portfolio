@@ -1,12 +1,14 @@
 'use client';
-import { siteConfig } from "@/constants/config";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { siteConfig } from "@/constants/config";
 
 export default function Hero() {
   const [typedText, setTypedText] = useState('');
   const [imageError, setImageError] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  
   const roles = ['مطور ويب', 'مصمم واجهات', 'منشئ محتويات', 'مبرمج', 'خريج علوم حاسوب'];
   const [roleIndex, setRoleIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -34,19 +36,21 @@ export default function Hero() {
   }, [charIndex, isDeleting, roleIndex, roles]);
 
   // دالة لإنشاء صورة بديلة عند الخطأ
-  const createFallbackImage = () => {
-    return (
-      <div className="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="text-6xl font-bold mb-2">A</div>
-          <div className="text-xl font-semibold">Aseel</div>
-        </div>
+  const createFallbackImage = () => (
+    <div className="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+      <div className="text-white text-center">
+        <div className="text-6xl font-bold mb-2">A</div>
+        <div className="text-xl font-semibold">Aseel</div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50/30 via-white/50 to-purple-50/30 backdrop-blur-sm pt-20" dir="rtl">
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50/30 via-white/50 to-purple-50/30 backdrop-blur-sm pt-20"
+      dir="rtl"
+    >
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 text-center lg:text-right fade-in">
@@ -61,31 +65,56 @@ export default function Hero() {
             <div className="h-12 mb-6">
               <h2 className="text-2xl md:text-3xl font-semibold text-gray-700">
                 <span className="text-blue-600">{typedText}</span>
-                <span className="ml-2 inline-block w-1 h-8 bg-blue-600 animate-pulse"></span>
+                <span className="mr-2 inline-block w-1 h-8 bg-blue-600 animate-pulse"></span>
               </h2>
             </div>
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              {siteConfig.personal.bio}
+              {siteConfig.bio?.summary || "مطور ويب متكامل من اليمن"}
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-8 mb-10">
-              <div className="text-center"><div className="text-3xl font-bold text-blue-600 mb-2">3+</div><div className="text-gray-600">سنوات خبرة</div></div>
-              <div className="text-center"><div className="text-3xl font-bold text-purple-600 mb-2">9+</div><div className="text-gray-600">مشروع مكتمل</div></div>
-              <div className="text-center"><div className="text-3xl font-bold text-green-600 mb-2">99%</div><div className="text-gray-600">رضا عملاء</div></div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">3+</div>
+                <div className="text-gray-600">سنوات خبرة</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">9+</div>
+                <div className="text-gray-600">مشروع مكتمل</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">99%</div>
+                <div className="text-gray-600">رضا عملاء</div>
+              </div>
             </div>
             <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-              <a href="https://wa.me/967781756747" target="_blank" className="btn-primary">💬 تواصل على واتساب</a>
-              <a href="#experience" className="btn-secondary">📂 استعرض أعمالي</a>
+              <a
+                href={siteConfig.contact.whatsapp.link || "https://wa.me/967781756747"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                💬 تواصل على واتساب
+              </a>
+              <a href="#experience" className="btn-secondary">
+                📂 استعرض أعمالي
+              </a>
             </div>
           </div>
 
           <div className="lg:w-1/2 flex justify-center">
-            <div className="relative group flex flex-col items-center" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+            <div
+              className="relative group flex flex-col items-center"
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+            >
               {!imageError ? (
                 <>
                   <div className="relative overflow-hidden bg-transparent">
-                    <img
+                    {/* استخدم next/image للتحسين التلقائي */}
+                    <Image
                       src="/profile.jpg"
-                      alt={siteConfig.personal.fullName}
+                      alt={siteConfig.site?.fullName || "أصيل الصبري"}
+                      width={384} // 96 * 4 = 384 للـ lg
+                      height={384}
                       className={`
                         w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96
                         object-cover border-4 border-white shadow-2xl
@@ -98,13 +127,20 @@ export default function Hero() {
                         console.log('❌ فشل تحميل الصورة - جاري عرض البديل');
                         setImageError(true);
                       }}
-                      loading="eager"
-                      decoding="async"
+                      priority // تحميل الصورة بأولوية لأنها LCP
                     />
-                    <div className={`absolute inset-0 transition-all duration-700 ${isHovering ? 'shadow-[inset_0_0_20px_rgba(59,130,246,0.2)]' : 'shadow-none'} pointer-events-none`}></div>
+                    <div
+                      className={`absolute inset-0 transition-all duration-700 ${
+                        isHovering ? 'shadow-[inset_0_0_20px_rgba(59,130,246,0.2)]' : 'shadow-none'
+                      } pointer-events-none`}
+                    ></div>
                   </div>
-                  
-                  <div className={`mt-6 text-center transition-all duration-500 ${isHovering ? 'opacity-100 translate-y-0' : 'opacity-90 translate-y-2'}`}>
+
+                  <div
+                    className={`mt-6 text-center transition-all duration-500 ${
+                      isHovering ? 'opacity-100 translate-y-0' : 'opacity-90 translate-y-2'
+                    }`}
+                  >
                     <div className="text-2xl font-bold text-gray-800 mb-1">Aseel Abduljalil</div>
                     <div className="text-sm text-gray-500 mb-1">Graduate of Saba Region University</div>
                     <div className="text-base text-gray-600 mt-2 flex items-center justify-center gap-2">
@@ -113,18 +149,25 @@ export default function Hero() {
                       <span className="text-blue-500">•</span>
                     </div>
                   </div>
-                  
-                  <div className={`absolute top-4 right-4 transition-all duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
+
+                  <div
+                    className={`absolute top-4 right-4 transition-all duration-500 ${
+                      isHovering ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-400/20 to-blue-500/20 backdrop-blur-sm flex items-center justify-center">
                       <span className="text-green-600 text-sm">👁️</span>
                     </div>
                   </div>
                 </>
               ) : (
-                // عرض الصورة البديلة
                 <>
                   {createFallbackImage()}
-                  <div className={`mt-6 text-center transition-all duration-500 ${isHovering ? 'opacity-100 translate-y-0' : 'opacity-90 translate-y-2'}`}>
+                  <div
+                    className={`mt-6 text-center transition-all duration-500 ${
+                      isHovering ? 'opacity-100 translate-y-0' : 'opacity-90 translate-y-2'
+                    }`}
+                  >
                     <div className="text-2xl font-bold text-gray-800 mb-1">Aseel Abduljalil</div>
                     <div className="text-sm text-gray-500 mb-1">Graduate of Saba Region University</div>
                     <div className="text-base text-gray-600 mt-2 flex items-center justify-center gap-2">
@@ -150,5 +193,3 @@ export default function Hero() {
     </section>
   );
 }
-
-

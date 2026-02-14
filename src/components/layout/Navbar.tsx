@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { siteConfig } from '@/constants/config';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,30 +28,31 @@ export default function Navbar() {
     <>
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/90 backdrop-blur-lg shadow-lg py-3' 
+          ? 'bg-white/95 backdrop-blur-lg shadow-md py-3' 
           : 'bg-transparent py-5'
       }`} dir="rtl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            {/* الشعار */}
+            
+            {/* الشعار - يسحب البيانات من الـ Config */}
             <Link 
               href="#home" 
               className="flex items-center space-x-3 space-x-reverse group"
               aria-label="الرئيسية"
             >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center transition-transform group-hover:scale-110 ${
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center transition-transform group-hover:rotate-6 ${
                 scrolled ? 'shadow-lg' : 'shadow-xl'
               }`}>
                 <span className="text-white font-bold text-xl">💻</span>
               </div>
               <div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                 اصيل الصبري
+                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                  {siteConfig?.site?.fullName || 'أصيل الصبري'}
                 </div>
-                <div className={`text-sm transition-all ${
-                  scrolled ? 'text-gray-600' : 'text-gray-500'
+                <div className={`text-xs font-medium transition-all ${
+                  scrolled ? 'text-gray-600' : 'text-gray-400'
                 }`}>
-                  مطور ويب 
+                  {siteConfig?.bio?.summary || 'مطور ويب وحلول رقمية'}
                 </div>
               </div>
             </Link>
@@ -61,40 +63,33 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all duration-300 group"
-                  aria-label={item.label.replace(/[^\w\s]/gi, '')}
+                  className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50/50 transition-all duration-300 group relative"
                 >
                   {item.label}
-                  <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
                 </a>
               ))}
-                <a 
-                  href="https://wa.me/967781756747" 
-                  target="_blank"
-                  className="btn-primary mr-4"
-                >
-                  💬 واتساب
-                </a>
+              <a 
+                href={siteConfig?.contact?.whatsapp?.link || 'https://wa.me/967781756747'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full font-bold shadow-lg hover:shadow-blue-200 hover:-translate-y-0.5 transition-all mr-4"
+              >
+                💬 واتساب
+              </a>
             </div>
 
             {/* زر القائمة للجوال */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-3 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 text-gray-700 hover:text-blue-600 transition-colors"
-              aria-label={isMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
-              aria-expanded={isMenuOpen}
+              className="md:hidden p-2.5 rounded-xl bg-gray-100 text-gray-700 hover:text-blue-600 transition-all"
+              aria-label="فتح القائمة"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-              >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
                 )}
               </svg>
             </button>
@@ -102,62 +97,46 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* قائمة الجوال */}
-      <div className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
-        isMenuOpen 
-          ? 'opacity-100 visible' 
-          : 'opacity-0 invisible'
+      {/* قائمة الجوال (Mobile Menu) */}
+      <div className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
+        isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
       }`}>
-        {/* خلفية معتمة */}
-        <div 
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={() => setIsMenuOpen(false)}
-        ></div>
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setIsMenuOpen(false)}></div>
         
-        {/* القائمة المنزلقة */}
-        <div className={`absolute top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 ${
+        <div className={`absolute top-0 right-0 h-full w-72 bg-white shadow-2xl transform transition-transform duration-500 ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
-          <div className="p-6">
-            {/* رأس القائمة */}
+          <div className="p-6 h-full flex flex-col">
             <div className="flex justify-between items-center mb-10">
-              <div className="flex items-center space-x-3 space-x-reverse">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">أ</span>
-                </div>
-                <div>
-                  <div className="font-bold text-gray-900">اصيل عبدالجليل</div>
-                  <div className="text-sm text-gray-600">مطور ويب متخصص</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-gray-100"
-                aria-label="إغلاق القائمة"
-              >
-                ✕
+              <span className="text-xl font-bold text-blue-600">القائمة</span>
+              <button onClick={() => setIsMenuOpen(false)} className="text-gray-400 hover:text-red-500">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
-            {/* عناصر القائمة */}
-            <div className="space-y-2">
+            <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between p-4 rounded-xl hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-colors group"
+                  className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-gray-700 font-medium transition-colors"
                 >
-                  <span className="font-medium">{item.label}</span>
-                  <span className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                  {item.label}
                 </a>
               ))}
-            </div>
+            </nav>
 
-            {/* زر التواصل في القائمة */}
-            <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
-              <a href="#contact" className="w-full btn-primary block text-center">
-                📨 تواصل معي
+            <div className="mt-auto border-t pt-6">
+              <a 
+                href={siteConfig?.contact?.whatsapp?.link || 'https://wa.me/967781756747'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-blue-600 text-white py-4 rounded-2xl flex items-center justify-center font-bold shadow-xl"
+              >
+                تواصل واتساب الآن
               </a>
             </div>
           </div>
