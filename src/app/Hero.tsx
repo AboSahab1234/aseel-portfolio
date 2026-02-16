@@ -35,7 +35,6 @@ export default function Hero() {
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, roleIndex, roles]);
 
-  // دالة لإنشاء صورة بديلة عند الخطأ
   const createFallbackImage = () => (
     <div className="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
       <div className="text-white text-center">
@@ -52,55 +51,10 @@ export default function Hero() {
       dir="rtl"
     >
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="lg:w-1/2 text-center lg:text-right fade-in">
-            <div className="mb-6">
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 rounded-full text-sm font-semibold mb-4 backdrop-blur-md border border-white/20">
-                👋 مرحباً بكم في موقعي
-              </span>
-            </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-              أنا <span className="gradient-text">اصيل عبدالجليل</span>
-            </h1>
-            <div className="h-12 mb-6">
-              <h2 className="text-2xl md:text-3xl font-semibold text-gray-700">
-                <span className="text-blue-600">{typedText}</span>
-                <span className="mr-2 inline-block w-1 h-8 bg-blue-600 animate-pulse"></span>
-              </h2>
-            </div>
-            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              {siteConfig.bio?.summary || "مطور ويب متكامل من اليمن"}
-            </p>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-8 mb-10">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">3+</div>
-                <div className="text-gray-600">سنوات خبرة</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">9+</div>
-                <div className="text-gray-600">مشروع مكتمل</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">99%</div>
-                <div className="text-gray-600">رضا عملاء</div>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-              <a
-                href={siteConfig.contact.whatsapp.link || "https://wa.me/967781756747"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                💬 تواصل على واتساب
-              </a>
-              <a href="#experience" className="btn-secondary">
-                📂 استعرض أعمالي
-              </a>
-            </div>
-          </div>
-
-          <div className="lg:w-1/2 flex justify-center">
+        {/* ترتيب عمودي: الصورة في الأعلى ثم النص */}
+        <div className="flex flex-col items-center text-center">
+          {/* الصورة في الأعلى */}
+          <div className="mb-8">
             <div
               className="relative group flex flex-col items-center"
               onMouseEnter={() => setIsHovering(true)}
@@ -109,11 +63,10 @@ export default function Hero() {
               {!imageError ? (
                 <>
                   <div className="relative overflow-hidden bg-transparent">
-                    {/* استخدم next/image للتحسين التلقائي */}
                     <Image
                       src="/profile.jpg"
                       alt={siteConfig.site?.fullName || "أصيل الصبري"}
-                      width={384} // 96 * 4 = 384 للـ lg
+                      width={384}
                       height={384}
                       className={`
                         w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96
@@ -127,7 +80,7 @@ export default function Hero() {
                         console.log('❌ فشل تحميل الصورة - جاري عرض البديل');
                         setImageError(true);
                       }}
-                      priority // تحميل الصورة بأولوية لأنها LCP
+                      priority
                     />
                     <div
                       className={`absolute inset-0 transition-all duration-700 ${
@@ -179,6 +132,57 @@ export default function Hero() {
                 </>
               )}
             </div>
+          </div>
+
+          {/* النص الرئيسي */}
+          <div className="mb-6">
+            <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 rounded-full text-sm font-semibold mb-4 backdrop-blur-md border border-white/20">
+              👋 مرحباً بكم في موقعي
+            </span>
+          </div>
+
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+            أنا <span className="gradient-text">اصيل عبدالجليل</span>
+          </h1>
+
+          <div className="h-12 mb-6">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-700">
+              <span className="text-blue-600">{typedText}</span>
+              <span className="mr-2 inline-block w-1 h-8 bg-blue-600 animate-pulse"></span>
+            </h2>
+          </div>
+
+          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+            {siteConfig.bio?.summary || "مطور ويب متكامل من اليمن"}
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-8 mb-10">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-2">3+</div>
+              <div className="text-gray-600">سنوات خبرة</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2">9+</div>
+              <div className="text-gray-600">مشروع مكتمل</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600 mb-2">99%</div>
+              <div className="text-gray-600">رضا عملاء</div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href={siteConfig.contact.whatsapp.link || "https://wa.me/967781756747"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              💬 تواصل على واتساب
+            </a>
+            <a href="#experience" className="btn-secondary">
+              📂 استعرض أعمالي
+            </a>
           </div>
         </div>
       </div>

@@ -4,28 +4,27 @@ import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import Hero from "./Hero";
 import Skills from "./Skills";
+import RamadanGiftButton from '@/components/RamadanGiftButton'; // ✅ إضافة استيراد الأيقونة
 
 export default function Home() {
   const [visibleSection, setVisibleSection] = useState<string>('home');
   const [isLoaded, setIsLoaded] = useState(false);
 
   // --- كيانك الرقمي (Entity Graph) ---
-  // ✅ النسخة المعدلة بالكامل – خالية من أخطاء Image Metadata
   const entityGraph = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://aseel-portfolio-eight.vercel.app/#person", // ✅ تم التحديث
+        "@id": "https://aseel-portfolio-eight.vercel.app/#person",
         "name": ["اصيل الصبري", "Aseel Al-Sabri", "اصيل عبدالجليل"],
         "alternateName": "Aseel",
-        "url": "https://aseel-portfolio-eight.vercel.app", // ✅ تم التحديث
-        // ✅ الصورة الآن كائن ImageObject متكامل داخل Person
+        "url": "https://aseel-portfolio-eight.vercel.app",
         "image": {
           "@type": "ImageObject",
-          "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image", // ✅ تم التحديث
-          "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg", // ✅ تم التحديث
-          "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg", // ✅ تم التحديث
+          "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
+          "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
+          "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
           "caption": "اصيل الصبري - مطور ويب متخصص في Next.js",
           "copyrightNotice": "© 2026 أصيل الصبري. جميع الحقوق محفوظة.",
           "creditText": "تصوير: أصيل الصبري",
@@ -34,18 +33,15 @@ export default function Home() {
             "@type": "Person",
             "name": "اصيل الصبري"
           }
-          // ملاحظة: لم أضف acquireLicensePage لأنه غير متوفر – هذا لا يسبب مشكلة
         },
         "jobTitle": "مطور ويب متخصص في Next.js",
         "worksFor": {
           "@type": "Organization",
           "name": "مستقل"
-          // ✅ تم إزالة @id الخاطئ الذي كان يشير إلى الشخص نفسه
         },
         "sameAs": [
           "https://github.com/AboSahab1234",
-          "https://www.linkedin.com/in/aseelalsabri", // ⚠️ غير هذا الرابط بعد إنشاء الحساب الفعلي
-          // "https://www.wikidata.org/wiki/Q..." // أضف رابط ويكي بيانات هنا لاحقاً
+          "https://www.linkedin.com/in/aseelalsabri",
         ],
         "alumniOf": {
           "@type": "CollegeOrUniversity",
@@ -56,12 +52,11 @@ export default function Home() {
       },
       {
         "@type": "WebSite",
-        "@id": "https://aseel-portfolio-eight.vercel.app/#website", // ✅ تم التحديث
-        "url": "https://aseel-portfolio-eight.vercel.app", // ✅ تم التحديث
+        "@id": "https://aseel-portfolio-eight.vercel.app/#website",
+        "url": "https://aseel-portfolio-eight.vercel.app",
         "name": "اصيل الصبري | مطور ويب",
-        "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" } // ✅ تم التحديث
+        "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" }
       }
-      // ✅ لم نعد بحاجة إلى ImageObject منفصل – كل شيء داخل Person
     ]
   };
 
@@ -169,7 +164,7 @@ export default function Home() {
 
   return (
     <>
-      {/* ✅ كود الهوية الرقمية – النسخة المعدلة بالكامل */}
+      {/* كود الهوية الرقمية */}
       <Script
         id="entity-graph"
         type="application/ld+json"
@@ -212,7 +207,10 @@ export default function Home() {
           <Hero />
         </section>
 
-        {/* قسم نبذة عني - بدون الهدف المهني */}
+        {/* ✅ أيقونة رمضان الكبيرة - مضافة هنا بعد Hero */}
+        <RamadanGiftButton />
+
+        {/* قسم نبذة عني */}
         <section id="about" className="section-padding bg-gradient-to-b from-white/80 to-gray-50/80 backdrop-blur-sm" dir="rtl">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 fade-in">
@@ -362,7 +360,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* قسم الاتصال - بدون خريطة الموقع */}
+        {/* قسم الاتصال */}
         <section id="contact" className="section-padding bg-gradient-to-br from-blue-50/50 via-white/60 to-purple-50/50 backdrop-blur-sm" dir="rtl">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 fade-in">

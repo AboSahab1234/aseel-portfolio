@@ -16,12 +16,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // عناصر التنقل (تم إضافة رابط جوائز رمضان)
   const navItems = [
     { href: '#home', label: '🏠 الرئيسية' },
     { href: '#about', label: '👤 عني' },
     { href: '#experience', label: '💼 الخبرات' },
     { href: '#skills', label: '🛠️ المهارات' },
     { href: '#contact', label: '📞 تواصل' },
+    // الرابط الجديد لصفحة رمضان
+    { href: '/ramadan-gifts', label: '🎁 جوائز رمضان', isSpecial: true },
   ];
 
   return (
@@ -34,7 +37,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             
-            {/* الشعار - يسحب البيانات من الـ Config */}
+            {/* الشعار */}
             <Link 
               href="#home" 
               className="flex items-center space-x-3 space-x-reverse group"
@@ -46,7 +49,6 @@ export default function Navbar() {
                 <span className="text-white font-bold text-xl">💻</span>
               </div>
               <div>
-                {/* ✅ تم التعديل هنا: استخدام site.name بدلاً من site.fullName */}
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                   {siteConfig?.site?.name || 'أصيل الصبري'}
                 </div>
@@ -60,16 +62,33 @@ export default function Navbar() {
 
             {/* روابط التنقل - شاشات كبيرة */}
             <div className="hidden md:flex items-center space-x-1 space-x-reverse">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50/50 transition-all duration-300 group relative"
-                >
-                  {item.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-                </a>
-              ))}
+              {navItems.map((item) => {
+                // إذا كان الرابط خاصًا بصفحة رمضان، نعطيه تصميمًا مميزًا
+                if (item.isSpecial) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="px-4 py-2 text-amber-600 hover:text-amber-700 font-bold rounded-lg hover:bg-amber-50 transition-all duration-300 group relative flex items-center gap-1"
+                    >
+                      <span className="text-xl">{item.label.split(' ')[0]}</span>
+                      <span>{item.label.slice(2)}</span>
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                  );
+                }
+                // الروابط العادية (داخل الصفحة)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50/50 transition-all duration-300 group relative"
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
+                  </Link>
+                );
+              })}
               <a 
                 href={siteConfig?.contact?.whatsapp?.link || 'https://wa.me/967781756747'}
                 target="_blank"
@@ -98,7 +117,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* قائمة الجوال (Mobile Menu) */}
+      {/* قائمة الجوال */}
       <div className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
         isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
       }`}>
@@ -118,16 +137,31 @@ export default function Navbar() {
             </div>
 
             <nav className="flex flex-col space-y-4">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                if (item.isSpecial) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center p-4 rounded-xl bg-amber-50 text-amber-700 font-bold transition-colors"
+                    >
+                      <span className="text-2xl ml-3">{item.label.split(' ')[0]}</span>
+                      <span>{item.label.slice(2)}</span>
+                    </Link>
+                  );
+                }
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-gray-700 font-medium transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="mt-auto border-t pt-6">
@@ -136,6 +170,7 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-blue-600 text-white py-4 rounded-2xl flex items-center justify-center font-bold shadow-xl"
+                onClick={() => setIsMenuOpen(false)}
               >
                 تواصل واتساب الآن
               </a>
