@@ -43,7 +43,6 @@ export default function Footer() {
                 <span className="text-2xl font-bold text-white">أ</span>
               </div>
               <div>
-                {/* ✅ تم التعديل هنا: استخدام site.name بدلاً من site.fullName */}
                 <h3 className="text-2xl font-bold tracking-tight">
                   {siteConfig?.site?.name || 'أصيل الصبري'}
                 </h3>

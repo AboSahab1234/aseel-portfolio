@@ -17,8 +17,8 @@ export const siteConfig = {
     lastName: "حزام الصبري",
     fullName: "أصيل عبد الجليل أحمد حزام الصبري",
     jobTitle: "مطور ويب متخصص ومسؤول نظم إدارية",
-    url: "https://aseel-website-sandy.vercel.app", // ✅ تم التحديث
-    ogImage: "https://aseel-website-sandy.vercel.app/og-image.png", // ✅ تم التحديث
+    url: "https://aseel-portfolio-eight.vercel.app", // ✅ تم التحديث إلى الرابط القديم المستقر
+    ogImage: "https://aseel-portfolio-eight.vercel.app/og-image.png", // ✅ تم التحديث
     favicon: "/favicon.ico",
     lang: "ar",
     dir: "rtl",
@@ -162,7 +162,6 @@ export const siteConfig = {
       icon: "📚",
       color: "green",
       achievements: [
-        "التفوق في مادة الرياضيات والفيزياء",
         "المشاركة في المسابقات الثقافية والعلمية"
       ]
     }
@@ -215,8 +214,8 @@ export const siteConfig = {
       mainTasks: [
         "إدارة وتنظيم قواعد البيانات الإدارية وسجلات الطلاب",
         "إعداد التقارير الإحصائية الدورية بدقة عالية",
-        "تصميم المطبوعات الإعلانية والتوعوية للأنشطة الجامعية",
-        "تخطيط الحملات الإعلامية الرقمية على منصات التواصل",
+        "تصميم المطبوعات الإعلانية والتوعوية للأنشطة المختلفة",
+        "تخطيط الحملات الإعلانية والإعلامية الرقمية   ",
         "الأرشفة الإلكترونية وحماية البيانات الحساسة"
       ],
       skillsApplied: [
@@ -297,7 +296,7 @@ export const siteConfig = {
         "نظام إشعارات فوري للمستجدات الجامعية"
       ],
       links: {
-        live: "https://aseel-website-sandy.vercel.app",
+        live: "https://aseel-portfolio-eight.vercel.app", // ✅ تم التحديث
         github: "https://github.com/AboSahabHezam"
       },
       techStack: ["Next.js", "React", "MySQL", "Tailwind"]
@@ -315,7 +314,7 @@ export const siteConfig = {
         "توافق تام مع الأجهزة المحمولة"
       ],
       links: {
-        live: "https://aseel-website-sandy.vercel.app",
+        live: "https://aseel-portfolio-eight.vercel.app", // ✅ تم التحديث
         github: "https://github.com/AboSahabHezam"
       },
       techStack: ["React", "CSS3", "JavaScript"]
