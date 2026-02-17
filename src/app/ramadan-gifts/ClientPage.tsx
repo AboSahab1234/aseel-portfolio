@@ -346,12 +346,12 @@ export default function RamadanGiftsPage() {
       </AnimatePresence>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* القسم العلوي (كما هو) */}
+        {/* ✅ تمت إضافة pt-20 هنا لتحريك المحتوى للأسفل */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8 relative"
+          className="text-center mb-8 relative pt-20"
         >
           {/* نجوم متحركة */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
