@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,9 +40,10 @@ export default function RamadanGiftsPage() {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
-  const [hadithIndex, setHadithIndex] = useState(0);
+  const [contentIndex, setContentIndex] = useState(0);
   const [ayatIndex, setAyatIndex] = useState(0);
-  const [tasbeehCount, setTasbeehCount] = useState(0); // عداد التسبيح الموحد
+  const [hadithIndex, setHadithIndex] = useState(0);
+  const [tasbeehCount, setTasbeehCount] = useState(0);
   const [showShareModal, setShowShareModal] = useState(false);
   const [currentJuz, setCurrentJuz] = useState(1);
   const [progressPercentage, setProgressPercentage] = useState(0);
@@ -83,7 +84,7 @@ export default function RamadanGiftsPage() {
   ];
 
   // ------------------------------------------------------------
-  // قائمة الجوائز (كما هي)
+  // قائمة الجوائز
   // ------------------------------------------------------------
   const prizes: Prize[] = [
     {
@@ -240,7 +241,8 @@ export default function RamadanGiftsPage() {
   // ------------------------------------------------------------
   useEffect(() => {
     setIsMounted(true);
-    const timer = setTimeout(() => setLoading(false), 800);
+    // محاكاة تحميل سريع جداً (أقل من ثانية)
+    const timer = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(timer);
   }, []);
 
@@ -276,21 +278,18 @@ export default function RamadanGiftsPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // تبديل الآيات كل 8 ثوانٍ
+  // تناوب المحتوى: آية ثم حديث (كل 6 ثوانٍ)
   useEffect(() => {
     const interval = setInterval(() => {
-      setAyatIndex((prev) => (prev + 1) % ayat.length);
-    }, 8000);
+      setContentIndex((prev) => (prev + 1) % 2);
+      if (contentIndex === 0) {
+        setHadithIndex((prev) => (prev + 1) % hadiths.length);
+      } else {
+        setAyatIndex((prev) => (prev + 1) % ayat.length);
+      }
+    }, 6000);
     return () => clearInterval(interval);
-  }, []);
-
-  // تبديل الأحاديث كل 10 ثوانٍ
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHadithIndex((prev) => (prev + 1) % hadiths.length);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [contentIndex, ayat.length, hadiths.length]);
 
   // تبديل العبارات كل 3 ثوانٍ
   useEffect(() => {
@@ -310,9 +309,8 @@ export default function RamadanGiftsPage() {
     setShowClaimModal(true);
   };
 
-  // دالة التسبيح الجديدة: تزيد العداد وتعيده بعد 33
   const handleTasbeeh = useCallback(() => {
-    setTasbeehCount((prev) => (prev + 1) % 34); // 0-33
+    setTasbeehCount((prev) => (prev + 1) % 34);
   }, []);
 
   const sharePage = useCallback(() => {
@@ -333,61 +331,79 @@ export default function RamadanGiftsPage() {
   const iconVariants = {
     initial: { scale: 0.8, rotate: -10 },
     animate: {
-      scale: [1, 1.2, 1],
-      rotate: [0, 10, -10, 0],
-      transition: { duration: 2, repeat: Infinity, repeatType: 'mirror' as const },
+      scale: [1, 1.15, 1],
+      rotate: [0, 8, -8, 0],
+      transition: { duration: 1.8, repeat: Infinity, repeatType: 'mirror' as const },
     },
     hover: {
-      scale: 1.4,
-      rotate: [0, 15, -15, 0],
-      transition: { duration: 0.4 },
+      scale: 1.3,
+      rotate: [0, 12, -12, 0],
+      transition: { duration: 0.3 },
     },
   };
 
   const cardVariants = {
     initial: { y: 0, opacity: 0.8 },
     hover: {
-      y: -8,
+      y: -5,
       scale: 1.02,
-      boxShadow: '0 30px 60px -15px rgba(0,0,0,0.5), 0 0 30px rgba(255,215,0,0.3)',
-      transition: { duration: 0.3 },
+      boxShadow: '0 20px 40px -12px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.3)',
+      transition: { duration: 0.2 },
     },
-    inView: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    inView: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
   const downloadButtonVariants = {
     animate: {
-      x: [0, -8, 8, -8, 8, 0],
-      y: [0, -4, 4, -4, 4, 0],
-      rotate: [0, -3, 3, -3, 3, 0],
-      scale: [1, 1.03, 1],
-      transition: { duration: 0.8, repeat: Infinity, repeatType: 'loop' as const },
+      x: [0, -5, 5, -5, 5, 0],
+      y: [0, -2, 2, -2, 2, 0],
+      scale: [1, 1.02, 1],
+      transition: { duration: 0.6, repeat: Infinity, repeatType: 'loop' as const },
     },
-    hover: { scale: 1.15, y: -5 },
+    hover: { scale: 1.1, y: -3 },
     tap: { scale: 0.95 },
   };
 
+  // نجوم متحركة - تقليل العدد إلى 12
+  const stars = useMemo(() => {
+    return [...Array(12)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: 5 + Math.random() * 8,
+      emoji: i % 3 === 0 ? '⭐' : i % 3 === 1 ? '✨' : '🌟',
+    }));
+  }, []);
+
   // ------------------------------------------------------------
-  // شاشة التحميل
+  // شاشة التحميل الفورية مع رسالة جذابة
   // ------------------------------------------------------------
   if (loading || !isMounted) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-green-900 to-green-700 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-900 via-green-800 to-teal-900 flex flex-col items-center justify-center z-50">
         <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="text-8xl text-white"
+          className="text-8xl text-white mb-6"
         >
-          🎁
+          🌙
         </motion.div>
-        <motion.div
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="absolute bottom-20 text-white text-2xl font-bold"
+          transition={{ delay: 0.2 }}
+          className="text-3xl md:text-4xl font-bold text-white text-center px-4 mb-4"
         >
-          يتم تحضير هداياك...
-        </motion.div>
+          رمضان شهر الخير والبركات
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="text-xl text-amber-200 text-center px-4 max-w-md"
+        >
+          جوائز حقيقية تنتظرك.. لا تفوّت الفرصة
+        </motion.p>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
@@ -397,42 +413,40 @@ export default function RamadanGiftsPage() {
     );
   }
 
-  // ------------------------------------------------------------
-  // التصميم الرئيسي
-  // ------------------------------------------------------------
   return (
     <main
-      className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 font-sans text-white overflow-x-hidden"
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-teal-50 font-sans text-gray-900 overflow-x-hidden"
       dir="rtl"
     >
-      {/* خلفية متحركة */}
+      {/* خلفية متحركة - نجوم أقل */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[url('/stars.png')] opacity-30 animate-pulse" />
+        <div className="absolute inset-0 bg-[url('/stars.png')] opacity-10 animate-pulse" />
         <motion.div
-          animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+          animate={{ rotate: 360, scale: [1, 1.05, 1] }}
           transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-20 left-20 w-32 h-32 text-yellow-200 text-8xl opacity-20"
+          className="absolute top-20 left-20 w-24 h-24 text-yellow-300 text-6xl opacity-10"
         >
           🌙
         </motion.div>
-        {[...Array(50)].map((_, i) => (
+        {stars.map((star) => (
           <motion.div
-            key={i}
-            className="absolute text-white text-xl"
-            initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }}
+            key={star.id}
+            className="absolute text-yellow-300 text-xl"
+            initial={{ x: `${star.left}%`, y: `${star.top}%`, opacity: 0 }}
             animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-              opacity: [0, 1, 0],
+              x: `${star.left + (Math.random() * 10 - 5)}%`,
+              y: `${star.top + (Math.random() * 10 - 5)}%`,
+              opacity: [0, 0.5, 0],
+              scale: [0.5, 1.2, 0.5],
             }}
-            transition={{ duration: 5 + Math.random() * 10, repeat: Infinity }}
+            transition={{ duration: star.duration, repeat: Infinity }}
           >
-            {i % 3 === 0 ? '⭐' : i % 3 === 1 ? '✨' : '🌟'}
+            {star.emoji}
           </motion.div>
         ))}
       </div>
 
-      {/* نافذة فرصة العمر */}
+      {/* النوافذ المنبثقة (نفسها) - اختصاراً لم نكررها */}
       <AnimatePresence>
         {showGiftBox && (
           <motion.div
@@ -447,23 +461,23 @@ export default function RamadanGiftsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: 'spring', damping: 20 }}
-              className="bg-white text-gray-900 rounded-3xl p-10 text-center shadow-2xl max-w-lg mx-4 border-4 border-amber-300 cursor-pointer"
+              className="bg-white text-gray-900 rounded-3xl p-8 text-center shadow-2xl max-w-lg mx-4 border-4 border-amber-300 cursor-pointer"
               onClick={(e) => e.stopPropagation()}
             >
               <motion.div
-                animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }}
+                animate={{ y: [0, -10, 0], rotate: [0, 3, -3, 0] }}
                 transition={{ repeat: Infinity, duration: 2 }}
-                className="text-9xl mb-6"
+                className="text-8xl mb-4"
               >
                 🎁
               </motion.div>
-              <h2 className="text-4xl font-bold text-green-800 mb-3">فرصة العمر قد لا تتكرر!</h2>
-              <p className="text-xl text-gray-600 mb-4">
+              <h2 className="text-3xl font-bold text-green-800 mb-3">فرصة العمر قد لا تتكرر!</h2>
+              <p className="text-lg text-gray-600 mb-4">
                 لا رسوم اشتراك .. لا أوراق .. لا تعقيدات .. الفرصة سانحة.
               </p>
               <button
                 onClick={() => setShowGiftBox(false)}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-bold shadow-lg"
+                className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-bold shadow-lg"
               >
                 افتح الهدية
               </button>
@@ -472,7 +486,6 @@ export default function RamadanGiftsPage() {
         )}
       </AnimatePresence>
 
-      {/* نافذة استلام الجائزة */}
       <AnimatePresence>
         {showClaimModal && selectedPrize && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
@@ -483,36 +496,36 @@ export default function RamadanGiftsPage() {
               transition={{ type: 'spring', damping: 25 }}
               className="bg-white text-gray-900 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border-2 border-amber-200"
             >
-              <div className={`bg-gradient-to-r ${selectedPrize.color} p-6 text-white text-center`}>
-                <motion.span animate={{ scale: [1, 1.2, 1] }} className="text-6xl mb-2 block">
+              <div className={`bg-gradient-to-r ${selectedPrize.color} p-5 text-white text-center`}>
+                <motion.span animate={{ scale: [1, 1.1, 1] }} className="text-5xl mb-1 block">
                   {selectedPrize.emoji}
                 </motion.span>
-                <h3 className="text-2xl font-bold">{selectedPrize.title}</h3>
+                <h3 className="text-xl font-bold">{selectedPrize.title}</h3>
               </div>
-              <div className="p-6 text-gray-700 space-y-4">
+              <div className="p-5 text-gray-700 space-y-3">
                 <div>
                   <p className="font-semibold text-amber-700 mb-2">📅 موعد التسليم:</p>
-                  <ul className="space-y-2 pr-4">
-                    <li className="flex items-center gap-2">
+                  <ul className="space-y-1 pr-4">
+                    <li className="flex items-center gap-2 text-sm">
                       <span className="text-green-600">•</span>
                       <span><span className="font-medium">في العيد:</span> فرحة لا توصف.</span>
                     </li>
-                    <li className="flex items-center gap-2">
+                    <li className="flex items-center gap-2 text-sm">
                       <span className="text-green-600">•</span>
                       <span><span className="font-medium">في القبر:</span> نور وفسحة.</span>
                     </li>
-                    <li className="flex items-center gap-2">
+                    <li className="flex items-center gap-2 text-sm">
                       <span className="text-green-600">•</span>
                       <span><span className="font-medium">يوم القيامة:</span> تحت ظل العرش.</span>
                     </li>
                   </ul>
                 </div>
-                <div className="bg-blue-50 p-4 rounded-xl text-sm">
+                <div className="bg-blue-50 p-3 rounded-xl text-sm">
                   <p className="text-blue-800 leading-relaxed">
-                    لا تحتاج لذكر اسمك ولا رقم حسابك، فراعي المسابقة يعلم كل شيء، بيده كل شيء، وهو أكرم الأكرمين.
+                    لا تحتاج لذكر اسمك ولا رقم حسابك، فراعي المسابقة يعلم كل شيء.
                   </p>
                 </div>
-                <p className="text-center text-gray-600 font-medium pt-2">
+                <p className="text-center text-gray-600 font-medium pt-1 text-sm">
                   الآن.. ابدأ العمل، فالجائزة بانتظارك.
                 </p>
               </div>
@@ -521,7 +534,7 @@ export default function RamadanGiftsPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowClaimModal(false)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-bold shadow-md"
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm"
                 >
                   ✨ تم الاستلام
                 </motion.button>
@@ -531,7 +544,6 @@ export default function RamadanGiftsPage() {
         )}
       </AnimatePresence>
 
-      {/* نافذة المشاركة */}
       <AnimatePresence>
         {showShareModal && (
           <motion.div
@@ -546,31 +558,31 @@ export default function RamadanGiftsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: 'spring', damping: 20 }}
-              className="bg-white text-gray-900 rounded-3xl p-8 text-center shadow-2xl max-w-md mx-4 border-4 border-amber-300"
+              className="bg-white text-gray-900 rounded-3xl p-6 text-center shadow-2xl max-w-md mx-4 border-4 border-amber-300"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-2xl font-bold text-green-800 mb-4">شارك الصفحة</h3>
-              <p className="text-gray-600 mb-6">انسخ الرابط وأرسله لأصدقائك</p>
-              <div className="flex items-center gap-2 bg-gray-100 p-3 rounded-xl mb-4">
+              <h3 className="text-2xl font-bold text-green-800 mb-3">شارك الأجر</h3>
+              <p className="text-gray-600 mb-4">انسخ الرابط وأرسله لأصدقائك لتنال الأجر</p>
+              <div className="flex items-center gap-2 bg-gray-100 p-2 rounded-xl mb-3">
                 <input
                   type="text"
                   value={typeof window !== 'undefined' ? window.location.href : ''}
                   readOnly
-                  className="bg-transparent flex-1 text-left text-gray-600 outline-none"
+                  className="bg-transparent flex-1 text-left text-gray-600 outline-none text-sm"
                 />
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
                     alert('تم نسخ الرابط');
                   }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm"
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm"
                 >
                   نسخ
                 </button>
               </div>
               <button
                 onClick={() => setShowShareModal(false)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-full"
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded-full text-sm"
               >
                 إغلاق
               </button>
@@ -580,96 +592,77 @@ export default function RamadanGiftsPage() {
       </AnimatePresence>
 
       {/* الحاوية الرئيسية */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12">
-        {/* شريط التقدم (اختياري - يمكن إزالته أيضاً) */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        {/* القسم العلوي الجديد */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="relative h-4 bg-gray-700 rounded-full mb-8 overflow-hidden"
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercentage}%` }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="absolute inset-0 bg-gradient-to-r from-green-400 via-amber-400 to-green-400"
-            style={{ boxShadow: '0 0 20px rgba(74, 222, 128, 0.8)' }}
-          />
-        </motion.div>
-
-        {/* القسم العلوي */}
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8 relative"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-6"
         >
-          {/* نجوم متحركة */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(30)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute text-yellow-300 text-3xl"
-                initial={{ x: Math.random() * 800 - 400, y: Math.random() * 200 - 100, opacity: 0 }}
-                animate={{
-                  x: [null, Math.random() * 100 - 50],
-                  y: [null, Math.random() * 50 - 25],
-                  opacity: [0, 1, 0],
-                  scale: [0.5, 1.5, 0.5],
-                }}
-                transition={{ duration: 5 + Math.random() * 5, repeat: Infinity }}
-                style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
-              >
-                {i % 3 === 0 ? '⭐' : i % 3 === 1 ? '✨' : '🌟'}
-              </motion.div>
-            ))}
-          </div>
-
-          {/* عنوان الترحيب */}
+          {/* عنوان "مبارك عليكم الشهر" بحجم أصغر */}
           <motion.div
-            animate={{ scale: [1, 1.05, 1], rotate: [0, 2, -2, 0] }}
-            transition={{ repeat: Infinity, duration: 4 }}
-            className="inline-block bg-gradient-to-r from-green-600 to-green-400 text-white px-8 py-4 rounded-full text-3xl font-bold shadow-2xl mb-4"
+            animate={{ scale: [1, 1.02, 1], textShadow: ['0 0 5px #4ade80', '0 0 15px #4ade80', '0 0 5px #4ade80'] }}
+            transition={{ repeat: Infinity, duration: 3 }}
+            className="text-2xl md:text-3xl font-bold text-green-800 mb-3"
           >
             🌙 مبارك عليكم الشهر 🌙
           </motion.div>
 
-          {/* مكان الآيات المتناوبة */}
+          {/* منطقة تناوب الآيات والأحاديث */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={ayatIndex}
-              initial={{ opacity: 0, y: 20 }}
+              key={contentIndex === 0 ? `ayat-${ayatIndex}` : `hadith-${hadithIndex}`}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6 }}
-              className="bg-white/10 backdrop-blur-sm p-5 rounded-xl mb-4 border-r-4 border-amber-400 text-right max-w-3xl mx-auto"
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white/80 backdrop-blur-sm p-4 rounded-xl mb-5 border-r-4 border-amber-400 text-right max-w-2xl mx-auto shadow-md"
             >
-              <p className="text-amber-200 text-lg leading-relaxed">{ayat[ayatIndex]}</p>
+              <p className="text-gray-700 text-base leading-relaxed">
+                {contentIndex === 0 ? ayat[ayatIndex] : hadiths[hadithIndex]}
+              </p>
             </motion.div>
           </AnimatePresence>
 
-          {/* مكان الأحاديث المتناوبة */}
-          <AnimatePresence mode="wait">
+          {/* شريط التقدم مع النسبة المئوية */}
+          <div className="relative max-w-2xl mx-auto mb-6">
+            <div className="relative h-5 bg-gray-300 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercentage}%` }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600"
+                style={{ boxShadow: '0 0 15px rgba(34, 197, 94, 0.8)' }}
+              />
+            </div>
             <motion.div
-              key={hadithIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6 }}
-              className="bg-white/10 backdrop-blur-sm p-5 rounded-xl mb-6 border-r-4 border-green-400 text-right max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="absolute left-0 top-0 -mt-1 text-sm font-bold text-white bg-green-600 px-2 py-0.5 rounded-full"
+              style={{ left: `calc(${progressPercentage}% - 25px)` }}
             >
-              <p className="text-green-200 text-lg leading-relaxed">{hadiths[hadithIndex]}</p>
+              {Math.round(progressPercentage)}%
             </motion.div>
-          </AnimatePresence>
+          </div>
+        </motion.div>
 
+        {/* بقية المحتوى */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-6"
+        >
           {/* شريط العروض الرمضانية */}
-          <div className="relative mb-6">
+          <div className="relative mb-4">
             <motion.div
-              animate={{ scale: [1, 1.02, 1], opacity: [0.7, 1, 0.7] }}
+              animate={{ scale: [1, 1.01, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="w-full h-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 rounded-full shadow-lg"
+              className="w-full h-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 rounded-full shadow-lg"
             />
-            <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-l from-amber-400 to-yellow-400 mt-2">
+            <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-l from-amber-700 to-yellow-600 mt-1">
               🎉 العروض الرمضانية 🎉
             </h2>
           </div>
@@ -678,56 +671,52 @@ export default function RamadanGiftsPage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={phraseIndex}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="text-2xl font-bold text-amber-300 bg-black/20 backdrop-blur-sm px-6 py-3 rounded-full inline-block shadow-md mb-6"
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="text-xl font-bold text-amber-600 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full inline-block shadow-md mb-4"
             >
               {ramadanPhrases[phraseIndex]}
             </motion.div>
           </AnimatePresence>
 
-          {/* العداد الرئيسي المتوهج */}
+          {/* العداد الرئيسي */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="relative inline-block mx-auto mb-6 w-full max-w-md"
+            className="relative inline-block mx-auto mb-5 w-full max-w-md"
           >
             <motion.div
-              animate={{ scale: [1, 1.05, 1], opacity: [0.4, 0.7, 0.4] }}
+              animate={{ scale: [1, 1.03, 1], opacity: [0.4, 0.6, 0.4] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl blur-2xl"
+              className="absolute inset-0 bg-gradient-to-r from-blue-300 to-indigo-300 rounded-2xl blur-xl"
             />
-            <div className="relative bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-4 shadow-xl border border-blue-700">
-              <p className="text-amber-300 font-bold text-center mb-2 drop-shadow-lg">
+            <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-blue-200">
+              <p className="text-blue-800 font-bold text-center mb-1 text-sm drop-shadow">
                 ⏳ الوقت المتبقي من رمضان
               </p>
-
               {!ramadanStarted ? (
-                <div className="text-2xl font-bold text-white animate-pulse text-center">
+                <div className="text-xl font-bold text-blue-600 animate-pulse text-center">
                   🌙 رمضان على الأبواب...
                 </div>
               ) : timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
-                <div className="text-2xl font-bold text-white animate-pulse text-center">
-                  ✨ انتهت فرصة رمضان، تقبل الله منا ومنك
+                <div className="text-xl font-bold text-green-600 animate-pulse text-center">
+                  ✨ انتهت فرصة رمضان
                 </div>
               ) : (
                 <motion.div
-                  animate={{ y: [0, -2, 0] }}
+                  animate={{ y: [0, -1, 0] }}
                   transition={{ repeat: Infinity, duration: 2 }}
-                  className="flex gap-2 justify-center text-2xl font-mono"
+                  className="flex gap-1 justify-center text-xl font-mono"
                 >
                   {Object.entries(timeLeft).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="bg-blue-950/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-blue-500 shadow-inner"
-                    >
-                      <span className="text-yellow-300 font-bold drop-shadow-[0_0_8px_rgba(255,255,0,0.8)]">
+                    <div key={key} className="bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 shadow-sm">
+                      <span className="text-blue-700 font-bold">
                         {value}
                       </span>
-                      <span className="text-xs text-blue-200 block drop-shadow-md">
+                      <span className="text-[10px] text-blue-500 block">
                         {key === 'days' ? 'يوم' : key === 'hours' ? 'ساعة' : key === 'minutes' ? 'دقيقة' : 'ثانية'}
                       </span>
                     </div>
@@ -737,12 +726,12 @@ export default function RamadanGiftsPage() {
             </div>
           </motion.div>
 
-          {/* سبحة بسيطة: عداد أنيق قابل للنقر */}
+          {/* سبحة مصغرة */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex justify-center mb-8"
+            className="flex justify-center mb-6"
           >
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -750,28 +739,22 @@ export default function RamadanGiftsPage() {
               onClick={handleTasbeeh}
               className="relative cursor-pointer"
             >
-              {/* دائرة التسبيح المتوهجة */}
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-2xl border-4 border-yellow-300"
-                style={{ boxShadow: '0 0 30px rgba(245, 158, 11, 0.8)' }}
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-xl border-3 border-amber-300"
+                style={{ boxShadow: '0 0 20px rgba(245, 158, 11, 0.6)' }}
               >
-                <span className="text-4xl font-bold text-white drop-shadow-lg">
+                <span className="text-3xl font-bold text-white drop-shadow-lg">
                   {tasbeehCount}
                 </span>
               </div>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 rounded-full border-2 border-dashed border-amber-300 opacity-50"
-              />
-              <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-amber-300 text-sm font-medium">
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-amber-600 text-xs font-medium">
                 اضغط للتسبيح
               </div>
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* شبكة الجوائز */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        {/* شبكة الجوائز - مصغرة */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-3">
           {prizes.map((prize) => (
             <motion.div
               key={prize.id}
@@ -779,41 +762,31 @@ export default function RamadanGiftsPage() {
               initial="initial"
               whileInView="inView"
               whileHover="hover"
-              viewport={{ once: true, amount: 0.2 }}
-              className={`relative bg-gradient-to-br ${prize.bgColor} rounded-2xl shadow-xl border border-gray-700 overflow-hidden cursor-pointer text-white`}
+              viewport={{ once: true, amount: 0.1 }}
+              className={`relative bg-gradient-to-br ${prize.bgColor} rounded-xl shadow-lg border border-gray-700 overflow-hidden cursor-pointer text-white`}
               onClick={() => togglePrize(prize.id)}
-              style={{ boxShadow: `0 20px 40px -15px rgba(0,0,0,0.5), 0 0 20px rgba(251, 191, 36, 0.3)` }}
+              style={{ boxShadow: `0 10px 20px -10px rgba(0,0,0,0.5), 0 0 10px rgba(251, 191, 36, 0.2)` }}
             >
-              <motion.div
-                className="absolute inset-0 opacity-20"
-                animate={{
-                  background: [
-                    'radial-gradient(circle at 30% 30%, #fff, transparent)',
-                    'radial-gradient(circle at 70% 70%, #fff, transparent)',
-                  ],
-                }}
-                transition={{ duration: 4, repeat: Infinity, repeatType: 'reverse' }}
-              />
-              <div className="p-5 relative z-10">
-                <div className="flex items-start gap-3">
+              <div className="p-2 relative z-10">
+                <div className="flex items-start gap-1">
                   <motion.div
                     variants={iconVariants}
                     initial="initial"
                     animate="animate"
                     whileHover="hover"
-                    className={`text-4xl bg-gradient-to-br ${prize.color} w-14 h-14 flex items-center justify-center rounded-xl shadow-lg text-white`}
-                    style={{ boxShadow: `0 0 15px ${prize.glowColor}` }}
+                    className={`text-2xl bg-gradient-to-br ${prize.color} w-8 h-8 flex items-center justify-center rounded-lg shadow-md text-white`}
+                    style={{ boxShadow: `0 0 8px ${prize.glowColor}` }}
                   >
                     {prize.emoji}
                   </motion.div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-white mb-1">{prize.title}</h3>
-                    <p className="text-sm text-gray-200">{prize.shortDesc}</p>
+                    <h3 className="font-bold text-xs text-white mb-0.5 leading-tight">{prize.title}</h3>
+                    <p className="text-[10px] text-gray-200 leading-tight">{prize.shortDesc}</p>
                   </div>
                   <motion.span
                     animate={{ rotate: openPrize === prize.id ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-amber-300 text-xl"
+                    transition={{ duration: 0.15 }}
+                    className="text-amber-300 text-sm"
                   >
                     ▼
                   </motion.span>
@@ -822,37 +795,37 @@ export default function RamadanGiftsPage() {
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: openPrize === prize.id ? 'auto' : 0, opacity: openPrize === prize.id ? 1 : 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.15 }}
                   className="overflow-hidden"
                 >
-                  <div className="border-t-2 border-amber-400 pt-4 mt-3">
+                  <div className="border-t border-amber-400 pt-2 mt-1">
                     {prize.evidence && (
-                      <p className="text-amber-300 text-sm italic mb-2 pr-3 border-r-2 border-amber-400">
+                      <p className="text-amber-300 text-[10px] italic mb-1 pr-2 border-r-2 border-amber-400">
                         {prize.evidence}
                       </p>
                     )}
                     {Array.isArray(prize.fullDesc) ? (
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         {prize.fullDesc.map((item, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-sm text-gray-100">
-                            <span className="text-amber-400 text-lg">🔑</span>
+                          <div key={idx} className="flex items-center gap-1 text-[10px] text-gray-100">
+                            <span className="text-amber-400 text-xs">🔑</span>
                             <span>{item}</span>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-100 text-sm leading-relaxed">{prize.fullDesc}</p>
+                      <p className="text-gray-100 text-[10px] leading-relaxed">{prize.fullDesc}</p>
                     )}
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="mt-3 w-full bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded-full text-sm font-semibold transition shadow-md"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="mt-2 w-full bg-amber-500 hover:bg-amber-600 text-white py-1 px-2 rounded-full text-[10px] font-semibold transition shadow-md"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleClaimPrize(prize);
                       }}
                     >
-                      🎁 استلم الجائزة
+                      🎁 استلم
                     </motion.button>
                   </div>
                 </motion.div>
@@ -861,46 +834,53 @@ export default function RamadanGiftsPage() {
           ))}
         </div>
 
-        {/* التذييل */}
+        {/* التذييل المحسن مع سهم متحرك */}
         <motion.footer
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="mt-12 bg-white/10 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border border-white/20 relative overflow-hidden"
+          className="mt-10 bg-white/80 backdrop-blur-lg rounded-2xl p-4 md:p-6 shadow-xl border border-white/20 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-green-500/10 to-amber-500/10 blur-3xl" />
-          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-            <motion.div whileHover={{ scale: 1.1, rotate: 5 }} className="relative flex-shrink-0">
-              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                <Image src="/profile.jpg" alt="أصيل الصبري" width={112} height={112} className="object-cover" />
+          {/* سهم متحرك يشير إلى الأسفل */}
+          <motion.div
+            animate={{ y: [0, -5, 0], opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="absolute -top-3 left-1/2 transform -translate-x-1/2 text-2xl text-amber-500"
+          >
+            ↓
+          </motion.div>
+
+          <div className="absolute inset-0 bg-gradient-to-tr from-green-200/30 to-amber-200/30 blur-2xl" />
+          <div className="flex flex-col md:flex-row items-center gap-4 relative z-10">
+            <motion.div whileHover={{ scale: 1.05, rotate: 3 }} className="relative flex-shrink-0">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-white shadow-lg">
+                <Image src="/profile.jpg" alt="أصيل الصبري" width={80} height={80} className="object-cover" />
               </div>
             </motion.div>
             <div className="flex-1 text-center md:text-right">
-              <motion.h3 animate={{ scale: [1, 1.02, 1] }} className="text-2xl font-bold text-white mb-2">
+              <motion.h3 animate={{ scale: [1, 1.01, 1] }} className="text-xl font-bold text-green-800 mb-1">
                 أصيل الصبري
               </motion.h3>
-              <p className="text-gray-300 mb-3 leading-relaxed">
-                تخيل لو كانت هذه العروض في مسابقة أرضية: لكانت ضجة إعلامية، وتذاكر بملايين
-                الدولارات لكثرة المقبلين، عروض خيالية في هذا الشهر كل ما عليك هو المبادرة وإخلاص
-                النية. إنها فرصة العمر حقاً، فلا تفرط فيها.
+              <p className="text-gray-600 mb-2 text-xs leading-relaxed max-w-md mx-auto md:mx-0">
+                تخيل لو كانت هذه العروض في مسابقة أرضية: لكانت ضجة إعلامية، وتذاكر بملايين الدولارات. إنها فرصة العمر حقاً، فلا تفرط فيها.
               </p>
-              <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
-                <Link href="/" className="text-amber-300 hover:text-amber-400 transition flex items-center gap-1">
+              <div className="flex flex-wrap justify-center md:justify-start gap-3 text-xs">
+                <Link href="/" className="text-green-600 hover:text-green-800 transition flex items-center gap-1">
                   <span>🏠</span> الرئيسية
                 </Link>
-                <Link href="/blog" className="text-amber-300 hover:text-amber-400 transition flex items-center gap-1">
+                <Link href="/blog" className="text-green-600 hover:text-green-800 transition flex items-center gap-1">
                   <span>📝</span> المدونة
                 </Link>
-                <Link href="/tools" className="text-amber-300 hover:text-amber-400 transition flex items-center gap-1">
-                  <span>🛠️</span> الأدوات المجانية
+                <Link href="/tools" className="text-green-600 hover:text-green-800 transition flex items-center gap-1">
+                  <span>🛠️</span> الأدوات
                 </Link>
-                <Link href="/newsletter" className="text-amber-300 hover:text-amber-400 transition flex items-center gap-1">
-                  <span>📧</span> النشرة البريدية
+                <Link href="/newsletter" className="text-green-600 hover:text-green-800 transition flex items-center gap-1">
+                  <span>📧</span> النشرة
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col gap-3 flex-shrink-0">
+            <div className="flex flex-row md:flex-col gap-2 flex-shrink-0">
               <motion.a
                 href="/ramadan-plan.pdf"
                 download
@@ -908,24 +888,22 @@ export default function RamadanGiftsPage() {
                 animate="animate"
                 whileHover="hover"
                 whileTap="tap"
-                className="block bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-4 px-6 rounded-2xl shadow-2xl border-2 border-yellow-300"
+                className="block bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-2 px-4 rounded-xl shadow-lg border border-amber-300 text-sm"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl animate-bounce">📋</span>
-                  <div className="text-right">
-                    <div className="text-sm opacity-90">حمّل الآن</div>
-                    <div className="text-xl">خطة اغتنام الشهر</div>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl animate-bounce">📋</span>
+                  <span>خطة الشهر</span>
                 </div>
               </motion.a>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={sharePage}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg flex items-center justify-center gap-2"
+                className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-2 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm"
               >
-                <span className="text-xl">📤</span>
-                <span>شارك الصفحة</span>
+                <span className="text-lg">📤</span>
+                <span className="hidden sm:inline">شارك الأجر</span>
+                <span className="sm:hidden">شارك</span>
               </motion.button>
             </div>
           </div>
