@@ -4,28 +4,33 @@ import { useState, useEffect } from 'react';
 import Script from 'next/script';
 import Hero from "./Hero";
 import Skills from "./Skills";
-import RamadanGiftButton from '@/components/RamadanGiftButton'; // ✅ إضافة استيراد الأيقونة
+import RamadanGiftButton from '@/components/RamadanGiftButton';
 
 export default function Home() {
   const [visibleSection, setVisibleSection] = useState<string>('home');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // --- كيانك الرقمي (Entity Graph) ---
+  // --- كيانك الرقمي (Entity Graph) - محدث ---
   const entityGraph = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Person",
         "@id": "https://aseel-portfolio-eight.vercel.app/#person",
-        "name": ["اصيل الصبري", "Aseel Al-Sabri", "اصيل عبدالجليل"],
+        "name": [
+          "أصيل عبدالجليل أحمد الصبري", // ✅ الاسم الثلاثي الكامل
+          "اصيل الصبري",
+          "Aseel Al-Sabri",
+          "اصيل عبدالجليل"
+        ],
         "alternateName": "Aseel",
         "url": "https://aseel-portfolio-eight.vercel.app",
         "image": {
           "@type": "ImageObject",
           "@id": "https://aseel-portfolio-eight.vercel.app/#profile-image",
-          "url": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
-          "contentUrl": "https://aseel-portfolio-eight.vercel.app/profile.jpg",
-          "caption": "اصيل الصبري - مطور ويب متخصص في Next.js",
+          "url": "https://github.com/AboSahab1234.png", // ✅ رابط GitHub المباشر
+          "contentUrl": "https://github.com/AboSahab1234.png",
+          "caption": "أصيل عبدالجليل الصبري - مهندس برمجيات وإداري", // ✅ وصف محدث
           "copyrightNotice": "© 2026 أصيل الصبري. جميع الحقوق محفوظة.",
           "creditText": "تصوير: أصيل الصبري",
           "license": "https://creativecommons.org/licenses/by/4.0/",
@@ -34,7 +39,7 @@ export default function Home() {
             "name": "اصيل الصبري"
           }
         },
-        "jobTitle": "مطور ويب متخصص في Next.js",
+        "jobTitle": "Software Engineer & Manager", // ✅ مسمى وظيفي جديد
         "worksFor": {
           "@type": "Organization",
           "name": "مستقل"
@@ -47,14 +52,20 @@ export default function Home() {
           "@type": "CollegeOrUniversity",
           "name": "جامعة إقليم سبأ"
         },
-        "knowsAbout": ["Next.js", "React", "TypeScript", "Tailwind CSS", "MySQL"],
-        "description": "مطور ويب يمني، خريج علوم حاسوب، متخصص في تطوير المواقع الحديثة."
+        "knowsAbout": [
+          "Next.js", "React", "TypeScript", "Tailwind CSS", "MySQL",
+          "Project Management", // ✅ كلمات مفتاحية إدارية
+          "Technical Leadership",
+          "Engineering Excellence",
+          "Full-Stack Solutions"
+        ],
+        "description": "مهندس برمجيات ومدير مشاريع تقنية يمني، خريج علوم حاسوب، متخصص في تطوير المواقع الحديثة وإدارة الفرق التقنية." // ✅ وصف محدث
       },
       {
         "@type": "WebSite",
         "@id": "https://aseel-portfolio-eight.vercel.app/#website",
         "url": "https://aseel-portfolio-eight.vercel.app",
-        "name": "اصيل الصبري | مطور ويب",
+        "name": "أصيل الصبري | مهندس برمجيات ومدير",
         "publisher": { "@id": "https://aseel-portfolio-eight.vercel.app/#person" }
       }
     ]
@@ -83,25 +94,27 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // ✅ تحديث بيانات الخبرات (أيقونات جديدة وتصحيح التاريخ)
   const experiences = [
     {
       period: "أغسطس 2023 - ديسمبر 2025",
-      title: "تصميم وبرمجة المواقع",
-      description: "تصميم مواقع على لغات الويب و MySQL، المشاركة في تصميم وبناء بوابة الجامعة الإلكترونية.",
-      icon: "💻",
+      title: "هندسة البرمجيات وإدارة المشاريع", // ✅ عنوان محدث
+      description: "تصميم وبرمجة المواقع باستخدام Next.js و MySQL، وإدارة فرق التطوير، والمشاركة في بناء بوابة الجامعة الإلكترونية.",
+      icon: "🛠️", // ✅ أيقونة تعبر عن الهندسة والإدارة
       color: "from-blue-500 to-cyan-500",
       achievements: [
         "تصميم وبرمجة مواقع متكاملة باستخدام Next.js و React",
-        "بناء وتطوير قاعدة بيانات باستخدام MySQL",
+        "بناء وتطوير قواعد بيانات MySQL وتحسين أدائها",
         "المشاركة في تطوير بوابة الجامعة الإلكترونية",
+        "إدارة فريق صغير من المطورين وتوزيع المهام",
         "تحسين أداء المواقع وسرعة التحميل"
       ]
     },
     {
-      period: "يناير 2026 - 2019",
-      title: " إدارة المكاتب  ",
+      period: "2019 - 2026", // ✅ تم تصحيح التاريخ
+      title: "إدارة المكاتب والتخطيط الإداري", // ✅ عنوان محدث
       description: "أعمال التصميم والتخطيط، إنشاء وإعداد وإدارة البيانات والتقارير، تصميم وطباعة منشورات إعلانية وتوعوية.",
-      icon: "🏢",
+      icon: "📊", // ✅ أيقونة تعبر عن الإدارة
       color: "from-purple-500 to-pink-500",
       achievements: [
         "تصميم وتخطيط الحملات الإعلانية",
@@ -164,7 +177,6 @@ export default function Home() {
 
   return (
     <>
-      {/* كود الهوية الرقمية */}
       <Script
         id="entity-graph"
         type="application/ld+json"
@@ -172,7 +184,7 @@ export default function Home() {
       />
 
       <div className="min-h-screen">
-        {/* مؤشر التقدم */}
+        {/* مؤشر التقدم (بدون تغيير) */}
         <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
           <div className="flex flex-col items-center gap-4">
             {['home', 'about', 'skills', 'experience', 'contact'].map((section) => (
@@ -190,27 +202,23 @@ export default function Home() {
                     : 'bg-gray-300 group-hover:bg-blue-400'
                 }`}></div>
                 <span className="absolute left-6 top-1/2 transform -translate-y-1/2 whitespace-nowrap bg-gray-900 text-white text-sm px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {
-                    section === 'home' ? 'الرئيسية' :
-                    section === 'about' ? 'عني' :
-                    section === 'skills' ? 'المهارات' :
-                    section === 'experience' ? 'الخبرات' : 'التواصل'
-                  }
+                  {section === 'home' ? 'الرئيسية' :
+                   section === 'about' ? 'عني' :
+                   section === 'skills' ? 'المهارات' :
+                   section === 'experience' ? 'الخبرات' : 'التواصل'}
                 </span>
               </a>
             ))}
           </div>
         </div>
 
-        {/* قسم Hero */}
         <section id="home">
           <Hero />
         </section>
 
-        {/* ✅ أيقونة رمضان الكبيرة - مضافة هنا بعد Hero */}
         <RamadanGiftButton />
 
-        {/* قسم نبذة عني */}
+        {/* قسم نبذة عني (بدون تغيير) */}
         <section id="about" className="section-padding bg-gradient-to-b from-white/80 to-gray-50/80 backdrop-blur-sm" dir="rtl">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 fade-in">
@@ -251,7 +259,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* إحصائيات */}
             <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl text-center border border-gray-200/50 hover:shadow-lg transition-shadow">
                 <div className="text-4xl font-bold gradient-text mb-3">100%</div>
@@ -273,12 +280,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* قسم المهارات */}
         <section id="skills">
           <Skills />
         </section>
 
-        {/* قسم الخبرات المهنية */}
+        {/* قسم الخبرات المهنية - محدث */}
         <section id="experience" className="section-padding bg-gradient-to-br from-gray-50/80 to-white/80 backdrop-blur-sm" dir="rtl">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 fade-in">
@@ -289,13 +295,11 @@ export default function Home() {
                 الخبرات <span className="gradient-text">العملية</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                مسيرتي المهنية مليئة بالتحديات والإنجازات التي شكلت خبرتي الحالية
+                مسيرتي المهنية التي تجمع بين الهندسة والإدارة
               </p>
             </div>
 
-            {/* خط الزمن */}
             <div className="relative">
-              {/* الخط المتوسط */}
               <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500/50 to-purple-500/50 hidden lg:block"></div>
               
               <div className="space-y-16">
@@ -304,7 +308,6 @@ export default function Home() {
                     key={index}
                     className={`relative ${index % 2 === 0 ? 'lg:pr-1/2 lg:pl-12' : 'lg:pl-1/2 lg:pr-12'}`}
                   >
-                    {/* النقطة على الخط */}
                     <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 border-4 border-white shadow-lg hidden lg:block"></div>
                     
                     <div 
@@ -328,12 +331,9 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* الإنجازات */}
                       <div className="mt-8 space-y-4">
                         <h4 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-                          <span className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                            ✓
-                          </span>
+                          <span className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">✓</span>
                           أبرز المهام والإنجازات
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -360,7 +360,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* قسم الاتصال */}
+        {/* قسم الاتصال (بدون تغيير) */}
         <section id="contact" className="section-padding bg-gradient-to-br from-blue-50/50 via-white/60 to-purple-50/50 backdrop-blur-sm" dir="rtl">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 fade-in">
@@ -376,7 +376,6 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* معلومات التواصل */}
               <div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-xl border border-white/20">
                   <h3 className="text-3xl font-bold text-gray-900 mb-8">
@@ -410,12 +409,9 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* أوقات العمل */}
                   <div className="mt-12 p-8 bg-gradient-to-r from-green-50/50 to-emerald-50/50 rounded-2xl border border-green-200/30">
                     <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                      <span className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
-                        ⏰
-                      </span>
+                      <span className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">⏰</span>
                       أوقات الاستجابة
                     </h4>
                     <div className="space-y-2">
@@ -432,7 +428,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* نموذج التواصل */}
               <div>
                 <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-3xl p-10 text-white backdrop-blur-sm border border-white/10">
                   <h3 className="text-3xl font-bold mb-2">أرسل رسالة</h3>
