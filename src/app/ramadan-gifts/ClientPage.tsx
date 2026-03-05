@@ -13,7 +13,7 @@ interface Prize {
   emoji: string;
   title: string;
   shortDesc: string;
-  fullDesc: string | string[]; // يمكن أن يكون نصاً أو مصفوفة للأبواب
+  fullDesc: string | string[];
   evidence?: string;
   color: string;
   bgColor: string;
@@ -30,13 +30,13 @@ export default function RamadanGiftsPage() {
   const [openPrize, setOpenPrize] = useState<number | null>(null);
   const [showGiftBox, setShowGiftBox] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState({
+  const [timeLeftLayla, setTimeLeftLayla] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  const [ramadanStarted, setRamadanStarted] = useState(false);
+  const [laylaStarted, setLaylaStarted] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
@@ -236,12 +236,13 @@ export default function RamadanGiftsPage() {
   // ------------------------------------------------------------
   // التواريخ المهمة
   // ------------------------------------------------------------
-  const ramadanStart = new Date('2026-02-17T18:00:00').getTime();
-  const ramadanEnd = new Date('2026-03-19T18:00:00').getTime();
-  const totalRamadanHours = 30 * 24;
+  const ramadanStart = new Date('2026-02-17T18:00:00').getTime(); // 17 فبراير 2026 المغرب
+  const ramadanEnd = new Date('2026-03-19T18:00:00').getTime(); // بعد 30 يومًا
+  const totalRamadanHours = 30 * 24; // 720 ساعة
+  const laylatulQadrStart = new Date('2026-03-08T18:00:00').getTime(); // ليلة 21 رمضان (بداية العشر الأواخر)
 
   // ------------------------------------------------------------
-  // المؤثرات
+  // المؤثرات: تحديث العدادات
   // ------------------------------------------------------------
   useEffect(() => {
     setIsMounted(true);
@@ -257,17 +258,13 @@ export default function RamadanGiftsPage() {
     const interval = setInterval(() => {
       const now = new Date().getTime();
 
+      // شريط التقدم (كم مضى من رمضان)
       if (now < ramadanStart) {
-        setRamadanStarted(false);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         setDaysPassed(0);
         setTimeElapsed({ hours: 0, minutes: 0 });
         setProgressPercentage(0);
       } else if (now >= ramadanStart && now <= ramadanEnd) {
-        setRamadanStarted(true);
-        const distance = ramadanEnd - now;
         const passed = now - ramadanStart;
-        
         const passedHours = Math.floor(passed / (1000 * 60 * 60));
         const passedMinutes = Math.floor((passed % (1000 * 60 * 60)) / (1000 * 60));
         setTimeElapsed({ hours: passedHours, minutes: passedMinutes });
@@ -278,23 +275,30 @@ export default function RamadanGiftsPage() {
         const passedDays = Math.floor(passed / (1000 * 60 * 60 * 24));
         setDaysPassed(passedDays);
         setCurrentJuz(Math.min(Math.ceil(passedDays * 1.2), 30));
+      } else {
+        setProgressPercentage(100);
+      }
 
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
+      // عداد ليلة القدر (الجائزة الكبرى)
+      const distanceToLayla = laylatulQadrStart - now;
+      if (distanceToLayla > 0) {
+        setLaylaStarted(false);
+        setTimeLeftLayla({
+          days: Math.floor(distanceToLayla / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distanceToLayla % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distanceToLayla % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distanceToLayla % (1000 * 60)) / 1000),
         });
       } else {
-        setRamadanStarted(false);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        setProgressPercentage(100);
+        setLaylaStarted(true);
+        setTimeLeftLayla({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
+  // تناوب المحتوى: آية ثم حديث (كل 6 ثوانٍ)
   useEffect(() => {
     const interval = setInterval(() => {
       setContentIndex((prev) => (prev + 1) % 2);
@@ -307,6 +311,7 @@ export default function RamadanGiftsPage() {
     return () => clearInterval(interval);
   }, [contentIndex, ayat.length, hadiths.length]);
 
+  // تبديل العبارات كل 3 ثوانٍ
   useEffect(() => {
     const interval = setInterval(() => {
       setPhraseIndex((prev) => (prev + 1) % ramadanPhrases.length);
@@ -610,7 +615,7 @@ export default function RamadanGiftsPage() {
           </AnimatePresence>
         </motion.div>
 
-        {/* شريط التقدم الدقيق */}
+        {/* شريط التقدم الدقيق (كم مضى من رمضان) */}
         <div className="relative max-w-md mx-auto mb-6">
           <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
             <motion.div
@@ -659,49 +664,88 @@ export default function RamadanGiftsPage() {
           </motion.div>
         </AnimatePresence>
 
-        {/* العداد الرئيسي - مع توهج قوي */}
+        {/* ===== عداد ليلة القدر (الجائزة الكبرى) - التصميم المبهر ===== */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="relative inline-block mx-auto mb-4 w-full max-w-lg"
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="relative inline-block mx-auto mb-6 w-full max-w-lg"
         >
-          {/* طبقات توهج متعددة */}
+          {/* طبقات توهج متعددة بألوان ذهبية وأرجوانية وفيروزية */}
           <motion.div
-            animate={{ scale: [1, 1.03, 1], opacity: [0.3, 0.6, 0.3] }}
+            animate={{ scale: [1, 1.05, 1], opacity: [0.6, 1, 0.6] }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 rounded-2xl blur-xl"
+            className="absolute inset-0 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 rounded-2xl blur-2xl"
           />
           <motion.div
-            animate={{ scale: [1, 1.02, 1], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ repeat: Infinity, duration: 2.5 }}
-            className="absolute inset-0 bg-gradient-to-r from-green-300 to-emerald-300 rounded-2xl blur-lg"
+            animate={{ scale: [1, 1.03, 1], opacity: [0.5, 0.9, 0.5] }}
+            transition={{ repeat: Infinity, duration: 2.3 }}
+            className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-2xl blur-xl"
           />
           <motion.div
-            animate={{ scale: [1, 1.01, 1], opacity: [0.5, 0.8, 0.5] }}
-            transition={{ repeat: Infinity, duration: 3 }}
-            className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl blur-md"
+            animate={{ scale: [1, 1.02, 1], opacity: [0.4, 0.8, 0.4] }}
+            transition={{ repeat: Infinity, duration: 2.6 }}
+            className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-teal-400 rounded-2xl blur-lg"
           />
           
-          <div className="relative bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 rounded-2xl p-5 shadow-2xl border border-amber-400">
-            <p className="text-amber-300 font-bold text-center mb-2 text-sm drop-shadow-lg">⏳ الوقت المتبقي من رمضان</p>
-            {!ramadanStarted ? (
-              <div className="text-xl font-bold text-white animate-pulse text-center">🌙 رمضان على الأبواب...</div>
-            ) : timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
-              <div className="text-xl font-bold text-white animate-pulse text-center">✨ انتهت فرصة رمضان</div>
+          <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 rounded-2xl p-6 shadow-2xl border-2 border-yellow-400">
+            {/* أيقونات وزخارف علوية */}
+            <div className="flex justify-center gap-4 mb-2">
+              <span className="text-3xl">🌟</span>
+              <span className="text-3xl">🌙</span>
+              <span className="text-3xl">✨</span>
+            </div>
+
+            {/* العنوان المتغير */}
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-3">
+              <span className="text-transparent bg-clip-text bg-gradient-to-l from-yellow-300 via-amber-300 to-yellow-300">
+                {laylaStarted 
+                  ? '🎁 الجائزة الكبرى بين يديك! 🎁' 
+                  : '⏳ ترقبوا ليلة القدر... ⏳'}
+              </span>
+            </h3>
+
+            {/* فضائل ليلة القدر */}
+            <div className="text-center text-amber-200 text-sm mb-4 space-y-1">
+              <p className="font-semibold text-lg">خير من 83 سنة و4 أشهر</p>
+              <p className="text-base opacity-90">الساعة الواحدة = 60,000 ساعة عبادة</p>
+            </div>
+
+            {/* العرض الرئيسي */}
+            {laylaStarted ? (
+              <div className="text-center py-4">
+                <div className="text-3xl font-bold text-yellow-300 animate-pulse mb-2">
+                  العشر الأواخر قد أظلتكم!
+                </div>
+                <p className="text-lg text-amber-200">اللهم اجعلنا من عتقاء هذا الشهر</p>
+                <div className="flex justify-center gap-3 mt-4">
+                  <span className="text-4xl">🤲</span>
+                  <span className="text-4xl">🕋</span>
+                  <span className="text-4xl">🌟</span>
+                </div>
+              </div>
             ) : (
-              <motion.div
-                animate={{ y: [0, -1, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex gap-2 justify-center text-xl font-mono"
-              >
-                {Object.entries(timeLeft).map(([key, value]) => (
-                  <div key={key} className="bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-amber-500 shadow-inner">
-                    <span className="text-yellow-300 font-bold text-xl drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]">{value}</span>
-                    <span className="text-[10px] text-amber-200 block drop-shadow-md">{key === 'days' ? 'يوم' : key === 'hours' ? 'ساعة' : key === 'minutes' ? 'دقيقة' : 'ثانية'}</span>
-                  </div>
-                ))}
-              </motion.div>
+              <>
+                <div className="text-center text-amber-300 text-sm mb-3">
+                  الوقت المتبقي لبداية العشر الأواخر
+                </div>
+                <motion.div
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="flex gap-3 justify-center text-2xl md:text-3xl font-mono"
+                >
+                  {Object.entries(timeLeftLayla).map(([key, value]) => (
+                    <div key={key} className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl border-2 border-yellow-500 shadow-[0_0_15px_rgba(255,215,0,0.5)]">
+                      <span className="text-yellow-300 font-bold drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]">
+                        {value}
+                      </span>
+                      <span className="text-xs text-amber-300 block mt-1">
+                        {key === 'days' ? 'يوم' : key === 'hours' ? 'ساعة' : key === 'minutes' ? 'دقيقة' : 'ثانية'}
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
+              </>
             )}
           </div>
         </motion.div>
